@@ -17,6 +17,6 @@
     "query-string": "~1.0.0",
     "vue": "~0.11.4",
     "superagent": "^0.21.0",
-    "strkio-storage-githubgist": "^0.1.0"
+    "strkio-storage-githubgist": "strkio/strkio-storage-githubgist#2f909b9c562337d3b1a30879291a72e622e2a6c7"
   }
 }
