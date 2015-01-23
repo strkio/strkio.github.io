@@ -17,7 +17,8 @@ $ gulp serve
 ## Deploying to GitHub Pages
 
 ```sh
-$ gulp build deploy
+$ gulp build
+$ gulp deploy
 ```
 
 ## License
