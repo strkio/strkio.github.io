@@ -152,7 +152,8 @@ gulp.task('clean', function (cb) {
 gulp.task('deploy', function (cb) {
   buildBranch({
     folder: 'build',
-    domain: 'strk.io'
+    domain: 'strk.io',
+    branch: 'master'
   }, cb);
 });
 
