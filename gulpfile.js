@@ -6,6 +6,7 @@ var del = require('del');
 var buildBranch = require('buildbranch');
 var webpackMiddleware = require('webpack-dev-middleware');
 var webpack = require('webpack');
+var path = require('path');
 
 var webpackConfigTemplate = {
   entry: {
@@ -59,7 +60,7 @@ gulp.task('build', function (cb) {
     'build:html',
     'build:scripts',
     'build:stylesheets'
-  ], cb);
+  ], 'build:rev', cb);
 });
 
 gulp.task('build:favicon', function () {
@@ -83,6 +84,32 @@ gulp.task('build:html', function () {
     .pipe($.preprocess({context: preprocessctx}))
     .pipe($.htmlmin(htmlminConfig))
     .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:rev', function () {
+  var revved = [];
+  var filter = $.filter(['**', '!index.html']);
+  return gulp.src([
+    'build/scripts/*.js',
+    'build/stylesheets/*.css',
+    'build/favicon.ico',
+    'build/index.html'
+  ], {base: path.join(__dirname, 'build')})
+    .pipe(filter)
+    .pipe($.rev())
+    .pipe(filter.restore())
+    .pipe(through.obj(function (file, enc, callback) {
+      if (file.revOrigPath) {
+        revved.push(file.revOrigPath);
+      }
+      this.push(file);
+      callback();
+    }))
+    .pipe($.revReplace({replaceInExtensions: '.html'}))
+    .pipe(gulp.dest('build'))
+    .on('end', function (cb) {
+      del(revved, cb);
+    });
 });
 
 gulp.task('build:scripts', function (cb) {
