@@ -1,0 +1,22 @@
+{
+  "name": "strkio.github.io",
+  "version": "0.1.0",
+  "authors": [
+    "Stanley Shyiko <stanley.shyiko@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "d3": "~3.4.13",
+    "fastclick": "~1.0.3",
+    "foundation": "~5.4.7",
+    "hint.css": "~1.3.3",
+    "moment": "~2.8.4",
+    "normalize.css": "~3.0.2",
+    "pikaday": "~1.3.0",
+    "query-string": "~1.0.0",
+    "vue": "~0.11.4",
+    "superagent": "^0.21.0",
+    "strkio-storage-githubgist": "^0.1.0"
+  }
+}

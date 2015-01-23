@@ -1,0 +1,169 @@
+var gulp = require('gulp-help')(require('gulp'), {description: ''});
+var $ = require('gulp-load-plugins')();
+var through = require('through2');
+var runSequence = require('run-sequence');
+var del = require('del');
+var buildBranch = require('buildbranch');
+var webpackMiddleware = require('webpack-dev-middleware');
+var webpack = require('webpack');
+
+var webpackConfigTemplate = {
+  entry: {
+    index: './src/scripts/index.js',
+    thirdparty: [
+      'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
+      'fastclick', 'strkio-storage-githubgist'
+    ]
+  },
+  resolve: {
+    modulesDirectories: ['bower_components', 'node_modules'],
+    alias: {
+      superagent: 'superagent/superagent.js'
+    }
+  },
+  externals: {
+    jsonify: 'JSON'
+  },
+  module: {
+    noParse: [/(d3|moment|pikaday|query-string|superagent|vue|fastclick)/],
+    loaders: [
+      {
+        test: /\.html/,
+        loader: 'html'
+      }
+    ]
+  },
+  plugins: [
+    new webpack.ResolverPlugin(
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin(
+        '.bower.json', ['main']
+      )
+    ),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+  ]
+};
+
+var optimize = false;
+
+var src = {
+  js: ['gulpfile.js', 'src/scripts/**/*.js'],
+  css: 'src/stylesheets/**/*.css',
+  html: 'src/*.html'
+};
+
+gulp.task('build', function (cb) {
+  optimize = true;
+  runSequence('clean', [
+    'build:favicon',
+    'build:fonts',
+    'build:html',
+    'build:scripts',
+    'build:stylesheets'
+  ], cb);
+});
+
+gulp.task('build:favicon', function () {
+  gulp.src('src/favicon.ico')
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:fonts', function () {
+  return gulp.src('src/fonts/*.ttf', {base: 'src'})
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:html', function () {
+  var htmlminConfig = {};
+  var preprocessctx = {};
+  if (optimize) {
+    htmlminConfig.collapseWhitespace = true;
+    preprocessctx.NODE_ENV = 'production';
+  }
+  return gulp.src(src.html)
+    .pipe($.preprocess({context: preprocessctx}))
+    .pipe($.htmlmin(htmlminConfig))
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:scripts', function (cb) {
+  var webpackConfig = Object.create(webpackConfigTemplate);
+  if (optimize) {
+    webpackConfig.plugins || (webpackConfig.plugins = []);
+    webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
+      'thirdparty', 'build/scripts/thirdparty.js'));
+    webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    }));
+  }
+  webpackConfig.output = {filename: 'build/scripts/[name].js'};
+  webpack(webpackConfig, function (err, stats) {
+    if (err) {
+      return cb(err);
+    }
+    console.log(stats.toString());
+    cb();
+  });
+});
+
+gulp.task('build:stylesheets', function () {
+  return gulp.src([
+    'src/stylesheets/index.css',
+    'src/stylesheets/thirdparty.css' // todo: replace with concat
+  ], {base: 'src'})
+    .pipe($.myth())
+    .on('error', console.log)
+    .pipe(optimize ? $.csso() : through.obj())
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('clean', function (cb) {
+  del(['build'], cb);
+});
+
+gulp.task('deploy', function (cb) {
+  buildBranch({
+    folder: 'build',
+    domain: 'strk.io'
+  }, cb);
+});
+
+gulp.task('lint', ['lint:scripts']);
+
+gulp.task('lint:scripts', function () {
+  return gulp.src(src.js)
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('jshint-stylish'))
+    .pipe($.jscs());
+});
+
+gulp.task('serve', ['build:stylesheets'], function () {
+  var webpackConfig = Object.create(webpackConfigTemplate);
+  webpackConfig.devtool = 'eval'; // http://webpack.github.io/docs/configuration.html#devtool
+  webpackConfig.output = {path: '/', filename: 'scripts/index.js'};
+  webpackConfig.plugins || (webpackConfig.plugins = []);
+  webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
+    'thirdparty', 'scripts/thirdparty.js'));
+  $.connect.server({
+    root: ['build', 'src', '.'],
+    port: 8000,
+    middleware: function () {
+      return [
+        webpackMiddleware(webpack(webpackConfig))
+      ];
+    }
+  });
+  gulp.watch(src.css, ['build:stylesheets']);
+  gulp.watch(src.js, ['lint:scripts']);
+});
+
+gulp.task('serve:build', function () {
+  $.connect.server({root: 'build', port: 9000});
+});
+
+gulp.task('usemin', function () {
+  return gulp.src('src/index.html')
+    .pipe($.usemin())
+    .pipe(gulp.dest('build/'));
+});

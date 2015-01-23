@@ -1,0 +1,69 @@
+@import 'theme.css';
+
+/*
+@import '../../bower_components/pikaday/css/pikaday.css';
+*/
+
+.pika-button {
+  background: transparent;
+  transition: none !important;
+}
+
+.pika-single button,
+.pika-single table {
+  margin-bottom: 0 !important;
+}
+
+.pika-single .pika-button:hover {
+  color: #fff !important;
+  background: var(--base0b) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.is-today .pika-button {
+  color: var(--base0b) !important;
+}
+
+.is-selected .pika-button {
+  background: var(--base0b) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1px 3px var(--base0b);
+  border-radius: 0;
+}
+
+.pika-prev,
+.pika-next {
+  transition: none !important;
+  background-color: transparent !important;
+}
+
+.pika-single {
+  font-family: var(--basefont) !important;
+}
+
+.pika-label {
+  font-weight: normal !important;
+}
+
+.pika-table th {
+  font-weight: normal !important;
+}
+
+.switch.round label:after {
+  border-radius: 3px;
+}
+
+.switch.round label {
+  border-radius: 3px;
+}
+
+table.pika-table .even,
+table.pika-table .alt,
+table.pika-table tr:nth-of-type(even) {
+  background: #FFF !important;
+}
+
+.pika-table thead {
+  background-color: color(var(--base07) tint(30%));
+}

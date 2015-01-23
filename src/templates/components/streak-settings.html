@@ -1,0 +1,130 @@
+<div style="font-size: 0.9rem">
+  <form style="margin-bottom: 6px">
+    <div class="row">
+      <div class="small-9 columns">
+        <div class="row">
+          <div class="small-6 columns">
+            <label for="datepicker-{{index}}" class="right inline" style="margin-bottom: 0">Start date</label>
+          </div>
+          <div class="small-6 columns">
+            <span style="font-size: 1.2rem; position: absolute; right: 16px; top: 4px; pointer-events: none; color: gray">☶</span>
+            <input class="z-input" v-el="datepicker" type="text" id="datepicker-{{index}}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-6 columns">
+            <label class="right inline">Days</label>
+          </div>
+          <div class="small-6 columns">
+            <ul class="z-button-group button-group" style="width: 100%">
+              <li style="width: 15%;">
+                <a class="small button" v-class="secondary: excludeDay0"
+                   v-on="click: toggleDayExclusion(0)">Sun</a>
+              </li>
+              <li style="width: 14%;">
+                <a class="small button" v-class="secondary: excludeDay1"
+                   v-on="click: toggleDayExclusion(1)">Mon</a>
+              </li>
+              <li style="width: 14%;">
+                <a class="small button" v-class="secondary: excludeDay2"
+                   v-on="click: toggleDayExclusion(2)">Tue</a>
+              </li>
+              <li style="width: 14%;">
+                <a class="small button" v-class="secondary: excludeDay3"
+                   v-on="click: toggleDayExclusion(3)">Wed</a>
+              </li>
+              <li style="width: 14%;">
+                <a class="small button" v-class="secondary: excludeDay4"
+                   v-on="click: toggleDayExclusion(4)">Thu</a>
+              </li>
+              <li style="width: 14%;">
+                <a class="small button" v-class="secondary: excludeDay5"
+                   v-on="click: toggleDayExclusion(5)">Fri</a>
+              </li>
+              <li style="width: 15%;">
+                <a class="small button" v-class="secondary: excludeDay6"
+                   v-on="click: toggleDayExclusion(6)">Sat</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="!numeric">
+          <div class="row">
+            <div class="small-6 columns">
+              <label for="colorSwitch-{{index}}" style="margin-bottom: 8px" class="right inline">Entry color</label>
+            </div>
+            <div class="small-6 columns">
+              <div class="switch round green-red">
+                <input type="checkbox" id="colorSwitch-{{index}}" v-model="inverted" v-on="change: toggleRG($event)">
+                <label for="colorSwitch-{{index}}"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="numeric">
+          <div class="row">
+            <div class="small-6 columns">
+              <ul class="legend right" style="font-size: inherit; line-height: inherit">
+                <li style="background-color: #b5d29d"></li>
+                <li style="background-color: #a3be8c"></li>
+                <li style="background-color: #8faa79"></li>
+                <li style="background-color: #7c966d"></li>
+              </ul>
+            </div>
+            <div class="small-6 columns">
+              <div class="row">
+                <div class="small-6 columns">
+                  <input class="z-input" type="number" placeholder="min value" v-model="coloring.green[0]">
+                </div>
+                <div class="small-6 columns">
+                  <input class="z-input" type="number" placeholder="max value" v-model="coloring.green[1]">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-6 columns">
+              <ul class="legend right" style="font-size: inherit; line-height: inherit">
+                <li style="background-color: #e49780"></li>
+                <li style="background-color: #d08770"></li>
+                <li style="background-color: #bc755f"></li>
+                <li style="background-color: #a86255"></li>
+              </ul>
+            </div>
+            <div class="small-6 columns">
+              <div class="row">
+                <div class="small-6 columns">
+                  <input class="z-input" type="number" placeholder="min value" v-model="coloring.red[0]">
+                </div>
+                <div class="small-6 columns">
+                  <input class="z-input" type="number" placeholder="max value" v-model="coloring.red[1]">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-6 columns">
+
+          </div>
+          <div class="small-6 columns">
+            <a style="font-size: 0.9rem" v-on="click: numeric = !numeric">
+              {{ numeric ? '↑' : '↓' }} customize color distribution
+            </a>
+          </div>
+        </div>
+        <p></p>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="large-12 column" style="text-align: center">
+      <a class="button small success" v-on="click: applyChanges">
+        Apply changes
+      </a>
+      <a class="button small secondary" v-on="click: $parent.restoreDefaultView({targetVM: $parent})">
+        Cancel
+      </a>
+    </div>
+  </div>
+</div>

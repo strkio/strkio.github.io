@@ -1,0 +1,13 @@
+{
+  "preset": "google",
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+  "validateQuoteMarks": {
+    "mark": "'",
+    "escape": true
+  },
+  "disallowSpacesInAnonymousFunctionExpression": null,
+  "requireSpacesInAnonymousFunctionExpression": {
+    "beforeOpeningRoundBrace": true,
+    "beforeOpeningCurlyBrace": true
+  }
+}

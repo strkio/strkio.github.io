@@ -1,0 +1,39 @@
+<!-- todo: refactor dnd -->
+<div v-repeat="streak: streaks" v-on="dragenter:dragenter, dragend:dragend, drop:drop, dragover:dragover">
+  <div class="row">
+    <div class="small-6 column">
+      <h4 style="margin-top: 0.6rem;">
+        <span v-if="!readOnly" draggable="true" v-on="dragstart:dragstart"
+            style="cursor: ns-resize; font-size: 1.2rem; margin-right: 12px;">☰</span>
+        <span contenteditable="{{!readOnly}}"
+            v-on="blur: updateName(streak, $event)">
+          {{ streak.name }}
+        </span>
+      </h4>
+    </div>
+    <div class="small-6 column"
+       style="padding-top: 16px;">
+      <ul v-if="!readOnly" class="inline-list"
+          style="float: right; margin-bottom: 0">
+        <li>
+          <a class="z-icon hint--left hint--rounded hint--no-animate"
+             data-hint="Edit"
+             style="font-size: 1.1rem; "
+             v-on="click: edit(streak, $event)"></a>
+        </li>
+        <li>
+          <a class="z-icon hint--left hint--rounded hint--no-animate"
+             data-hint="Delete"
+             style="font-size: 1.1rem; "
+             v-on="click: askForDeleteConfirmation(streak, $event)">✕</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-12 column">
+      <hr style="margin-top: 0">
+    </div>
+  </div>
+  <div v-component="{{activeView ? activeView : 'streak'}}" v-with="{index: $index, streak: streak}"></div>
+</div>

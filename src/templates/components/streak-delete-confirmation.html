@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="large-12 column text-center">
+    Are you <b>ABSOLUTELY</b> sure you want to delete this streak?
+    This action CANNOT be undone.
+  </div>
+</div>
+<p></p>
+<div class="row">
+  <div class="large-12 column text-center">
+    <a class="button small alert" v-on="click: $parent.del(streak)">
+      Yes, I know what I'm doing
+    </a>
+    <a class="button small secondary" v-on="click: $parent.restoreDefaultView({targetVM: $parent})">
+      No
+    </a>
+  </div>
+</div>

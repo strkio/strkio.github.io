@@ -1,0 +1,107 @@
+@import 'theme.css';
+
+.cg {
+  font-size: 0.7rem;
+}
+
+.cg .cg-color-1.red {fill: #e49780}
+.cg .cg-color-2.red {fill: #d08770} /* original */
+.cg .cg-color-3.red {fill: #bc755f}
+.cg .cg-color-4.red {fill: #a86255}
+
+.cg .cg-color-1.yellow {fill: #ebcb8b} /* original */
+.cg .cg-color-2.yellow {fill: #d7b779}
+.cg .cg-color-3.yellow {fill: #c3a674}
+.cg .cg-color-4.yellow {fill: #af9463}
+
+.cg .cg-color-0 {fill: #eeeeee}
+
+.cg .cg-color-1.green {fill: #b5d29d}
+.cg .cg-color-2.green {fill: #a3be8c} /* original */
+.cg .cg-color-3.green {fill: #8faa79}
+.cg .cg-color-4.green {fill: #7c966d}
+
+.cg .label-x, .cg .label-y {
+  fill: #999;
+}
+
+.cg .day {
+  shape-rendering: crispEdges;
+  fill: #eff1f5;
+  stroke: #fff;
+  stroke-width: 1px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cg .day:hover, .cg .day.active {
+  stroke: #222;
+}
+
+.cg .day.disabled {
+  fill: rgba(239, 241, 245, 0.35);
+}
+
+.cg .day.disabled:hover {
+  stroke: inherit;
+}
+
+.cg-tooltip {
+  position: absolute;
+  z-index: 99999;
+  width: 140px;
+  padding: 10px;
+  /*display: none;*/
+  display: block;
+  visibility: hidden;
+  background: var(--base02);
+  color: var(--base06);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: 2px 2px 2px rgba(48, 48, 48, 0.2);
+  box-sizing: border-box;
+}
+
+.cg-tooltip::after{
+  position: absolute;
+  width: 0;
+  height: 0;
+  content: "";
+  padding: 0;
+  display: block;
+  bottom: -6px;
+  left: 50%;
+  margin-left: -6px;
+  border: 6px solid transparent;
+  border-top-color: var(--base02);
+  border-bottom-width: 0;
+}
+
+.cg-tooltip input {
+  border: 0;
+  background-color: var(--base02) !important;
+  color: #ffffff;
+  box-shadow: none !important;
+  padding: 0 !important;
+  padding-top: 6px !important;
+  height: 24px;
+  margin: 0 !important;
+  display: inline-block;
+  text-align: center;
+}
+
+.cg-tooltip input:focus {
+  background-color: var(--base02) !important;
+  outline:none !important;
+}
+
+.cg-tooltip input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.cg-tooltip input::-webkit-outer-spin-button,
+.cg-tooltip input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}

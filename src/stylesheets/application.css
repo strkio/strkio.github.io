@@ -1,0 +1,40 @@
+@import 'common.css';
+
+@import 'hint.css';
+@import 'pikaday.css';
+@import 'calendar-graph.css';
+
+@import 'components/streak.css';
+@import 'components/streak-set.css';
+@import 'components/streak-settings.css';
+
+header {
+  /*background-color: rgba(239, 241, 245, 0.33);*/
+  border-bottom: solid var(--base07) 1px;
+}
+
+.logo.medium {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 2.125rem;
+}
+
+.logo.medium sup {
+  font-size: 0.3em;
+  vertical-align: 1.3em;
+}
+
+
+.z-icon {
+  color: var(--base01);
+}
+
+.toolbar {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+  height: 47px;
+  line-height: 47px;
+  font-size: 0.9rem;
+}
+
+

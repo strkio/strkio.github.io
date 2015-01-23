@@ -1,0 +1,26 @@
+:root {
+
+  /*
+    base16 ocean palette:
+    http://chriskempson.github.io/base16/#ocean
+  */
+
+  --base00: #2b303b; /* gray, darkest */
+  --base01: #343d46;
+  --base02: #4f5b66;
+  --base03: #65737e;
+  --base04: #a7adba;
+  --base05: #c0c5ce;
+  --base06: #dfe1e8;
+  --base07: #eff1f5; /* gray, brightest */
+  --base08: #bf616a; /* red */
+  --base09: #d08770; /* orange */
+  --base0a: #ebcb8b; /* yellow */
+  --base0b: #a3be8c; /* green */
+  --base0c: #96b5b4; /* mint */
+  --base0d: #8fa1b3; /* blue */
+  --base0e: #b48ead; /* violet */
+  --base0f: #ab7967; /* brown */
+
+  --basefont: 'Open Sans', sans-serif;
+}

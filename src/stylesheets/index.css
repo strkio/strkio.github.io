@@ -1,0 +1,59 @@
+@import 'application.css';
+
+.z-bg {
+  position:fixed; top:0; left:0; height:100%; width:100%;
+  opacity: 0.33;
+}
+
+.vp-center {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  text-align: center;
+}
+
+.signin.button {
+  border-radius: 3px;
+  box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.2) inset;
+  font-weight: bold;
+  width: 268px;
+  background-color: var(--base0b);
+  border-color: color(var(--base0b) shade(10%));
+  transition: background-color 150ms ease-out;
+  margin-bottom: 0;
+  font-size: 1.2rem;
+}
+
+.signin.button:hover, .signin.button:focus {
+  background-color: color(var(--base0b) shade(10%));
+}
+
+.logo.large {
+  /*font-size: 68px;*/
+  /*letter-spacing: 3px;*/
+  font-size: 64px;
+  margin: 0;
+  line-height: normal;
+  height: 68px;
+}
+
+.logo.large sup {
+  position: absolute;
+  top: 26px;
+  font-size: 0.2em;
+  /*vertical-align: 2em;*/
+}
+
+.tagline {
+  color: var(--base0c);
+  /*margin-top: 0;*/
+  margin-top: 10px;
+  margin-bottom: 24px;
+  /*margin-bottom: 12px;*/
+}
+
+.signup {
+  margin-top: 0;
+  margin-bottom: 6px;
+}

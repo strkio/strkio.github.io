@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" >
+<!-- todo: WARN: IE lt 9 is not supported -->
+<!-- todo: line chart -->
+<!-- todo: allow to merge multiple streaks together -->
+<!-- todo: (off-canvas) list of streak sets -->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>strk.io</title>
+  <link rel="stylesheet" href="stylesheets/thirdparty.css"/>
+  <link rel="stylesheet" href="stylesheets/index.css"/>
+  <link rel="shortcut icon" href="favicon.ico"/>
+  <!-- todo: no-js check -->
+</head>
+<body v-cloak>
+<script type="text/javascript" src="scripts/thirdparty.js"></script>
+<!-- @exclude NODE_ENV=='production' -->
+<script>
+  Vue.config.silent = false;
+</script>
+<!-- @endexclude -->
+<script type="text/javascript" src="scripts/index.js"></script>
+<!-- @if NODE_ENV=='production' -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-35914342-4', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- @endif -->
+</body>
+</html>

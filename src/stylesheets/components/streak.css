@@ -1,0 +1,16 @@
+.streak {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.streak, .streak > * {
+  vertical-align: middle;
+  /*height: 33px;*/
+  /*min-height: 33px;*/
+  line-height: 1.5rem;
+}
+.streak, .streak > h4 {
+  vertical-align: top;
+  display: inline;
+}
+

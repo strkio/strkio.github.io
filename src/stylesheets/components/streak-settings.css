@@ -1,0 +1,36 @@
+.z-button-group a {
+  width: 100%;
+  padding: 6px !important;
+  border-radius: 0;
+  color: #4f4f4f;
+  background-color: transparent;
+  box-shadow: 0 -2px 0 var(--base0b) inset;
+}
+
+.z-button-group a:hover, .z-button-group a:focus {
+  background-color: transparent;
+  color: #4f4f4f;
+  box-shadow: 0 -3px 0 color(var(--base0b) shade(10%)) inset;
+}
+
+.z-button-group a.secondary {
+  background-color: transparent;
+  box-shadow: 0 -2px 0 var(--base07) inset;
+}
+
+.z-button-group a.secondary:hover, .z-button-group a.secondary:focus {
+  background-color: transparent;
+  box-shadow: 0 -3px 0 color(var(--base07) shade(5%)) inset;
+}
+
+.legend {
+  display: inline-block;
+  list-style: none;
+  margin: 0 5px;
+}
+
+.legend li {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+}

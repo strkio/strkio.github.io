@@ -1,0 +1,42 @@
+<header>
+  <div class="row">
+    <div class="small-3 column">
+      <h2 class="logo medium">strk.io<sup>alpha</sup></h2>
+      <!--<h2 class="logo medium"><a href="/">strk.io</a></h2>-->
+    </div>
+    <div class="small-9 column">
+      <ul class="toolbar inline-list" style="float: right">
+        <li v-if="signedIn && !draft && owner">
+          <!--todo: data-hint="Synchronize (last synchronized 1 day ago)"-->
+          <span style="display: inline !important;">
+            <a class="z-icon hint--left hint--rounded hint--no-animate"
+               data-hint="Synchronize"
+               style="font-size: 1.1rem;"
+               v-on="click: sync">⟲</a>
+          </span>
+        </li>
+        <li v-if="(signedIn && owner) || draft">
+          <a class="z-icon hint--left hint--rounded hint--no-animate"
+             data-hint="Add new streak"
+             v-on="click: addNewStreak">╋</a>
+        </li>
+        <li v-if="draft && signedIn">
+          <a v-on="click: saveAsGist">Save as Gist</a>
+        </li>
+        <li v-if="!signedIn">
+          <a href="https://github.com/login/oauth/authorize?client_id={{ clientId }}&scope=gist&redirect_uri={{ redirectURL | encode }}">Sign in with Github</a>
+        </li>
+        <li v-if="signedIn">
+          <a v-on="click: signOut">Sign out</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+<div v-if="set" v-component="streak-set" v-ref="streak-set" v-with="set"></div>
+<footer>
+  <a href="https://github.com/strkio/strkio-api-server">API</a> |
+  <a href="https://github.com/strkio/hubot-strkio">Hubot package</a> |
+  <a href="https://github.com/strkio/strkio.github.io">GitHub Page</a> |
+  with ♥ from <a href="https://github.com/shyiko">@shyiko</a>
+</footer>

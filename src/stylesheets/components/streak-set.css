@@ -1,0 +1,8 @@
+.dnd-placeholder {
+  margin: 6px auto;
+  min-height: 30px;
+  height: 30px;
+  background-color: rgba(239, 241, 245, 0.33);
+  text-align: center !important;
+  /*color: var(--base05);*/
+}

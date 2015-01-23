@@ -1,0 +1,23 @@
+@import 'theme.css';
+
+/*
+@import '../../bower_components/hint.css/hint.css';
+*/
+
+.hint:after,
+[data-hint]:after {
+  background-color: var(--base02);
+  color: var(--base06);
+  box-shadow: 2px 2px 2px rgba(48, 48, 48, 0.2);
+}
+
+.hint--top:before,
+.hint--bottom:before,
+.hint--left:before,
+.hint--right:before {
+  border-left-color: var(--base02);
+}
+
+.hint--rounded:after {
+  border-radius: 2px;
+}

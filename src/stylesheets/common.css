@@ -1,0 +1,141 @@
+@import 'theme.css';
+
+/*
+@import '../../bower_components/foundation/css/normalize.css';
+@import '../../bower_components/foundation/css/foundation.css';
+*/
+
+/*@import 'changaone-font.css';*/
+@import 'opensans-font.css';
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: auto;
+  min-height: 100%;
+  position: relative;
+  padding-bottom: 5rem; /* room for the footer */
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--basefont);
+}
+
+a {
+  color: var(--base0d);
+}
+
+a:hover {
+  color: color(var(--base0d) shade(20%));
+}
+
+hr {
+  border: solid var(--base07);
+  border-width: 1px 0 0;
+}
+
+[contenteditable]:focus {
+  outline: 0 solid transparent;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--base03);
+}
+
+.logo {
+  /*font-family: 'Pacifico';*/
+  /*font-family: 'Cookie';*/
+  /*font-family: 'Changa One', sans-serif;*/
+  /*text-transform: uppercase;*/
+  color: var(--base0c);
+  /*font-weight: bold;*/
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+input.z-input,
+input[type="number"].z-input {
+  box-shadow: none;
+}
+
+input.z-input:focus,
+input[type="number"].z-input:focus {
+  box-shadow: none;
+  background: #fff;
+}
+
+.button {
+  font-family: var(--basefont);
+  border-radius: 3px;
+  box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.2) inset;
+  transition: background-color 150ms ease-out;
+  margin-bottom: 0;
+}
+
+.button.success {
+  background-color: var(--base0b);
+  border-color: color(var(--base0b) shade(10%));
+}
+
+.button.success:hover, .button.success:focus {
+  background-color: color(var(--base0b) shade(10%));
+}
+
+.button.alert {
+  background-color: var(--base08);
+  border-color: color(var(--base08) shade(10%));
+}
+
+.button.alert:hover, .button.alert:focus {
+  background-color: color(var(--base08) shade(10%));
+}
+
+.button.secondary {
+  background-color: var(--base07);
+  border-color: color(var(--base07) shade(5%));
+}
+
+.button.secondary:hover, .button.secondary:focus {
+  background-color: color(var(--base07) shade(5%));
+}
+
+.switch.green-red label {
+  background: var(--base0b);
+}
+
+.switch.green-red label:after {
+  background: var(--base0b);
+}
+
+.switch.green-red input:checked + label {
+  background: var(--base08);
+}
+
+.switch.green-red input:checked + label:after {
+  background: var(--base08);
+}
+
+.inline-list {
+  overflow: inherit; /* to not interfere with hint.css */
+}
