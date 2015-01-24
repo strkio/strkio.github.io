@@ -30,7 +30,10 @@ var webpackConfigTemplate = {
     loaders: [
       {
         test: /\.html/,
-        loader: 'html'
+        loader: 'html',
+        query: {
+          removeRedundantAttributes: false // because of foundation
+        }
       }
     ]
   },
@@ -77,6 +80,7 @@ gulp.task('build:html', function () {
   var htmlminConfig = {};
   var preprocessctx = {};
   if (optimize) {
+    htmlminConfig.removeComments = true;
     htmlminConfig.collapseWhitespace = true;
     preprocessctx.NODE_ENV = 'production';
   }
@@ -166,7 +170,7 @@ gulp.task('lint:scripts', function () {
     .pipe($.jscs());
 });
 
-gulp.task('serve', ['build:stylesheets'], function () {
+gulp.task('serve', ['build:stylesheets', 'build:html'], function () {
   var webpackConfig = Object.create(webpackConfigTemplate);
   webpackConfig.devtool = 'eval'; // http://webpack.github.io/docs/configuration.html#devtool
   webpackConfig.output = {path: '/', filename: 'scripts/index.js'};
@@ -184,6 +188,7 @@ gulp.task('serve', ['build:stylesheets'], function () {
   });
   gulp.watch(src.css, ['build:stylesheets']);
   gulp.watch(src.js, ['lint:scripts']);
+  gulp.watch(src.html, ['build:html']);
 });
 
 gulp.task('serve:build', function () {
