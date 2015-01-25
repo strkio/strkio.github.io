@@ -14,7 +14,8 @@ var webpackConfigTemplate = {
     thirdparty: [
       'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
       'fastclick', 'strkio-storage-githubgist'
-    ]
+    ],
+    'dev-mode': './src/scripts/dev-mode.js'
   },
   resolve: {
     modulesDirectories: ['bower_components', 'node_modules'],
@@ -170,10 +171,10 @@ gulp.task('lint:scripts', function () {
     .pipe($.jscs());
 });
 
-gulp.task('serve', ['build:stylesheets', 'build:html'], function () {
+gulp.task('serve', ['clean', 'build:stylesheets', 'build:html'], function () {
   var webpackConfig = Object.create(webpackConfigTemplate);
   webpackConfig.devtool = 'eval'; // http://webpack.github.io/docs/configuration.html#devtool
-  webpackConfig.output = {path: '/', filename: 'scripts/index.js'};
+  webpackConfig.output = {path: '/', filename: 'scripts/[name].js'};
   webpackConfig.plugins || (webpackConfig.plugins = []);
   webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
     'thirdparty', 'scripts/thirdparty.js'));
