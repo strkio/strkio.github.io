@@ -151,7 +151,7 @@ gulp.task('build:stylesheets', function () {
 });
 
 gulp.task('clean', function (cb) {
-  del(['build'], cb);
+  del(['build'], {force: true}, cb);
 });
 
 gulp.task('deploy', function (cb) {
