@@ -48,9 +48,8 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
   var tooltipShown;
 
   var showTooltip = function (d) {
-    var self = this;
     var hideItself = hideTooltip.bind(this);
-    this.classList.add('active');
+    d3.select(this).classed('active', true);
     tooltip
       .html(tooltipFormat(d) + (type === 'numeric' ?
       '<input type="number" value="' + (data[d] || 0) + '" ' +
@@ -60,7 +59,7 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
       '></input>' : ''));
     //.attr('style', 'display: block;');
     var tooltipEL = tooltip[0][0];
-    var offsetParentBCR = this.offsetParent.getBoundingClientRect();
+    var offsetParentBCR = tooltipEL.offsetParent.getBoundingClientRect();
     var BCR = this.getBoundingClientRect();
     /*
      tooltip
@@ -92,7 +91,7 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
         .on('change', function () {
           // todo: throttle
           updateValue(d, this.value);
-          self.classList.add('active');
+          d3.select(this).classed('active', true);
         });
     }
     tooltipShown = true;
@@ -101,7 +100,7 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
   var keepInPlace;
   var hideTooltip = function () {
     if (tooltipShown) {
-      this.classList.remove('active');
+      d3.select(this).classed('active', false);
       tooltip[0][0].style.visibility = 'hidden';
       // causes flicker:
       // tooltip.attr('style', 'display: none').html('');
@@ -113,7 +112,7 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
   var prevD;
   daySelector
     .on('click', function (d) {
-      if (this.classList.contains('disabled')) {
+      if (d3.select(this).classed('disabled')) {
         return;
       }
       if (type === 'numeric') {
@@ -131,14 +130,14 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
     })
     .on('mouseover', function (d) {
       // todo: eliminate
-      if (this.classList.contains('disabled') || keepInPlace) {
+      if (d3.select(this).classed('disabled') || keepInPlace) {
         return;
       }
       showTooltip.call(this, d);
     })
     .on('mouseout', function () {
       // todo: eliminate
-      if (this.classList.contains('disabled') || keepInPlace) {
+      if (d3.select(this).classed('disabled') || keepInPlace) {
         return;
       }
       hideTooltip.call(this);
