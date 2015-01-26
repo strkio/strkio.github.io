@@ -8,11 +8,8 @@ module.exports = Vue.extend({
   components: {
     'streak-visualization': {
       ready: function () {
-        // todo: use
-        // var mq = window.matchMedia('only screen and (max-width: 1024px)');
-        // mq.addListener(function(changed) {...});
         var self = this;
-        var data = this.$data.data || {}; // todo: remove fallback;
+        var data = this.$data.data;
         var startDateTime = this.$data.startDate ?
           moment(this.$data.startDate)
             .startOf('day').toDate().getTime()
@@ -20,7 +17,7 @@ module.exports = Vue.extend({
         var excludedDays = this.$data.excludedDays || [];
         var coloring = this.$data.coloring || {green: [1, 1]};
         new CalendarGraph({
-          readOnly: false,
+          readOnly: !this.$root.$data.owner,
           trail: 'auto',
           disableDay: function (d) {
             return d.getTime() < startDateTime ||
@@ -63,7 +60,6 @@ module.exports = Vue.extend({
       var longest = 1;
       var current = 1;
       for (var i = 0, end = timestamps.length - 1; i < end; i++) {
-
         if (moment(timestamps[i]).add(1, 'day')
             .format('YYYY-MM-DD') === timestamps[i + 1]) {
           current++;

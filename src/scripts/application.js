@@ -90,6 +90,7 @@ module.exports = Vue.extend({
     }
   },
   ready: function () {
+    this.$data.$add('owner', true);
     this.$data.$add('set', {});
     var init = true;
     this.$watch('set.streaks', function () {
@@ -99,8 +100,8 @@ module.exports = Vue.extend({
       this.storage.fetch(function (err, data) {
         // todo: error-handling, 404 in particular
         data || (data = {streaks: []});
-        this.$data.$add('owner', data.owner ===
-          localStorage.getItem('strkio_user'));
+        this.$data.owner =
+          data.owner === localStorage.getItem('strkio_user');
         this.$data.set = data;
       }.bind(this));
     } else {
@@ -149,6 +150,7 @@ module.exports = Vue.extend({
     },
     signOut: function () {
       // todo: move authentication-specific code to a separate script
+      localStorage.removeItem('strkio_user');
       localStorage.removeItem('strkio_oauthToken');
       window.location = '/';
       // todo: (?) DELETE /applications/:client_id/tokens/:access_token

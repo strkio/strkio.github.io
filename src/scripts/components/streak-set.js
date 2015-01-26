@@ -31,7 +31,7 @@ module.exports = Vue.extend({
   },
   computed: {
     readOnly: function () {
-      return false; // todo: make it actually computable
+      return !this.$root.$data.owner;
     }
   },
   methods: {
@@ -51,12 +51,7 @@ module.exports = Vue.extend({
         e.targetVM.$data.activeView = 'streak-delete-confirmation';
       }
     },
-    // todo: remove?
-    del: function (streak) {
-/*
-      this.$data.$add('removedStreaks', []);
-      this.$data.removedStreaks.push(streak);
-*/
+    remove: function (streak) {
       this.streaks.$remove(streak);
     },
     restoreDefaultView: function (e) {
