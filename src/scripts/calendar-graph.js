@@ -284,6 +284,7 @@ CalendarGraph.prototype.updateValue = function (date, value) {
 };
 
 CalendarGraph.prototype._applyColoring = function (data) {
+  var disableDay = this.options.disableDay;
   var colorDistribution = this._colorDistribution ||
     (this._colorDistribution =
       new ColorDistribution({mapping: this.options.coloring}));
@@ -292,6 +293,9 @@ CalendarGraph.prototype._applyColoring = function (data) {
       return data.hasOwnProperty(d);
     })
     .attr('class', function (d) {
+      if (disableDay && disableDay(d)) {
+        return 'day disabled';
+      }
       var c = colorDistribution.colorAt(+data[d]);
       return 'day' + (c ? ' ' + c.id + ' cg-color-' + c.intensity : '');
     });
