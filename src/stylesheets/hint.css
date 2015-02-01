@@ -1,8 +1,4 @@
-@import 'theme.css';
-
-/*
-@import '../../bower_components/hint.css/hint.css';
-*/
+@import "theme.css";
 
 .hint:after,
 [data-hint]:after {

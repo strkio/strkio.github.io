@@ -1,12 +1,12 @@
-@import 'common.css';
+@import "common.css";
 
-@import 'hint.css';
-@import 'pikaday.css';
-@import 'calendar-graph.css';
+@import "hint.css";
+@import "pikaday.css";
+@import "calendar-graph.css";
 
-@import 'components/streak.css';
-@import 'components/streak-set.css';
-@import 'components/streak-settings.css';
+@import "components/streak.css";
+@import "components/streak-set.css";
+@import "components/streak-settings.css";
 
 header {
   /*background-color: rgba(239, 241, 245, 0.33);*/
@@ -26,7 +26,7 @@ header {
 
 
 .z-icon {
-  color: var(--base01);
+  color: var(--base03);
 }
 
 .toolbar {

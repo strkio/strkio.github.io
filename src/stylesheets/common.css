@@ -1,12 +1,7 @@
-@import 'theme.css';
+@import "theme.css";
 
-/*
-@import '../../bower_components/foundation/css/normalize.css';
-@import '../../bower_components/foundation/css/foundation.css';
-*/
-
-/*@import 'changaone-font.css';*/
-@import 'opensans-font.css';
+@import "opensans-font.css";
+@import "simple-line-icons-font.css";
 
 *,
 *:before,
@@ -30,7 +25,7 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-  color: var(--base0d);
+  color: var(--base03);
 }
 
 a:hover {
@@ -62,12 +57,7 @@ footer {
 }
 
 .logo {
-  /*font-family: 'Pacifico';*/
-  /*font-family: 'Cookie';*/
-  /*font-family: 'Changa One', sans-serif;*/
-  /*text-transform: uppercase;*/
   color: var(--base0c);
-  /*font-weight: bold;*/
 }
 
 .small {
@@ -75,14 +65,24 @@ footer {
 }
 
 input.z-input,
-input[type="number"].z-input {
+select.z-input {
   box-shadow: none;
+  background: #fff;
+  font-family: var(--basefont);
+  outline: none;
+  transition: box-shadow 0.45s, border-color 0.45s ease-in-out;
 }
 
 input.z-input:focus,
-input[type="number"].z-input:focus {
+select.z-input:focus {
   box-shadow: none;
   background: #fff;
+  border-color: #999999;
+}
+
+select.z-input:hover {
+  background: #fff;
+  border-color: #cccccc;
 }
 
 .button {
@@ -138,4 +138,31 @@ input[type="number"].z-input:focus {
 
 .inline-list {
   overflow: inherit; /* to not interfere with hint.css */
+}
+
+.radio,
+.checkbox {
+  display: block;
+  min-height: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.radio label,
+.checkbox label {
+  padding-left: 20px;
+  margin-bottom: 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+.radio input[type="radio"],
+.radio-inline input[type="radio"],
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+  float: left;
+  margin-left: -20px;
+}
+.radio input[type="radio"],
+.checkbox input[type="checkbox"] {
+  margin-top: 6px;
+  vertical-align: middle;
 }

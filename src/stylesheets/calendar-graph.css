@@ -1,4 +1,4 @@
-@import 'theme.css';
+@import "theme.css";
 
 .cg {
   font-size: 0.7rem;
@@ -97,7 +97,7 @@
   outline:none !important;
 }
 
-.cg-tooltip input[type='number'] {
+.cg-tooltip input[type="number"] {
   -moz-appearance: textfield;
 }
 

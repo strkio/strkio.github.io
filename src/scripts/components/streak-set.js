@@ -1,12 +1,5 @@
 var Vue = require('vue');
 
-var placeholder = document.createElement('div');
-placeholder.className = 'row dnd-placeholder';
-
-function generateName () {
-  return 'streak_' + Date.now();
-}
-
 module.exports = Vue.extend({
   template: require('../../templates/components/streak-set.html'),
   components: {
@@ -25,9 +18,12 @@ module.exports = Vue.extend({
   },
   data: function () {
     return {
-      timestamp: Date.now(),
       streaks: []
     };
+  },
+  ready: function () {
+    this._placeholder = document.createElement('div');
+    this._placeholder.className = 'row dnd-placeholder';
   },
   computed: {
     readOnly: function () {
@@ -51,22 +47,21 @@ module.exports = Vue.extend({
         e.targetVM.$data.activeView = 'streak-delete-confirmation';
       }
     },
-    remove: function (streak) {
-      this.streaks.$remove(streak);
-    },
     restoreDefaultView: function (e) {
-      e.targetVM.$data.$add('activeView');
-      e.targetVM.$data.activeView = 'streak';
+      if (!e.targetVM.$data.streak.name) {
+        this.streaks.$remove(e.targetVM.$data.streak);
+      } else {
+        e.targetVM.$data.$add('activeView');
+        e.targetVM.$data.activeView = 'streak';
+      }
     },
     add: function () {
       this.streaks.push({
-        name: generateName(),
         data: {}
       });
     },
-    updateName: function (streak, event) {
-      streak.name = event.target.innerText.trim();
-      this.$dispatch('streak-updated');
+    remove: function (streak) {
+      this.streaks.$remove(streak);
     },
     dragstart: function (e) {
       this._dragElem = e.targetVM;
@@ -83,14 +78,14 @@ module.exports = Vue.extend({
       if (this._insertIndex !== insertIndex) {
         if (sourceIndex === insertIndex) {
           if (this._placeholderInPlace) {
-            this.$el.removeChild(placeholder);
+            this.$el.removeChild(this._placeholder);
           }
           this._placeholderInPlace = false;
         } else {
           var posElem = sourceIndex < insertIndex ? e.targetVM.$el
             : e.targetVM.$el.previousSibling;
           this._placeholderInPlace = true;
-          this.$el.insertBefore(placeholder, posElem.nextSibling);
+          this.$el.insertBefore(this._placeholder, posElem.nextSibling);
         }
         this._insertIndex = insertIndex;
       }
@@ -112,7 +107,7 @@ module.exports = Vue.extend({
     },
     dragend: function (e) {
       if (this._placeholderInPlace) {
-        this.$el.removeChild(placeholder);
+        this.$el.removeChild(this._placeholder);
       }
       this._placeholderInPlace = false;
       var st = this._dragNode.style;

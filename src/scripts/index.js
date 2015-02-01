@@ -1,5 +1,3 @@
-//require('fastclick');
-
 var queryString = require('query-string');
 var request = require('superagent');
 
@@ -23,8 +21,6 @@ function bootstrapApp(data) {
 }
 
 if (qs.code && !oauthToken) {
-  // todo: make clientId (used in HTML templates) configurable
-  // todo: deploy zstreak-specific endpoint
   // todo: error-handling
   request.get(conf.gatekeeperURL + '/authenticate/' + qs.code, function (res) {
     var accessToken = res.body.token;

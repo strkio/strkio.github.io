@@ -1,8 +1,4 @@
-@import 'theme.css';
-
-/*
-@import '../../bower_components/pikaday/css/pikaday.css';
-*/
+@import "theme.css";
 
 .pika-button {
   background: transparent;

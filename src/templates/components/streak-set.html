@@ -1,39 +1,37 @@
 <!-- todo: refactor dnd -->
-<div v-repeat="streak: streaks" v-on="dragenter:dragenter, dragend:dragend, drop:drop, dragover:dragover">
-  <div class="row">
-    <div class="small-6 column">
-      <h4 style="margin-top: 0.6rem;">
-        <span v-if="!readOnly" draggable="true" v-on="dragstart:dragstart"
-            style="cursor: ns-resize; font-size: 1.2rem; margin-right: 12px;">☰</span>
-        <span contenteditable="{{!readOnly}}"
-            v-on="blur: updateName(streak, $event)">
+<div v-repeat="streak: streaks"
+     v-on="dragenter:dragenter, dragover:dragover, dragend:dragend, drop:drop">
+  <div class="row" style="margin-top: 18px; margin-bottom: 12px; ">
+    <div class="small-8 column"
+         style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <span
+          class="z-icon"
+          style="cursor: ns-resize; font-size: 1.1rem; margin-right: 12px;"
+          v-if="!readOnly" draggable="true" v-on="dragstart:dragstart">
+          <i class="icon-list"></i>
+        </span>
+        <span style="font-size: 1.4375rem">
           {{ streak.name }}
         </span>
-      </h4>
     </div>
-    <div class="small-6 column"
-       style="padding-top: 16px;">
-      <ul v-if="!readOnly" class="inline-list"
-          style="float: right; margin-bottom: 0">
-        <li>
-          <a class="z-icon hint--left hint--rounded hint--no-animate"
-             data-hint="Edit"
-             style="font-size: 1.1rem; "
-             v-on="click: edit(streak, $event)"></a>
-        </li>
-        <li>
-          <a class="z-icon hint--left hint--rounded hint--no-animate"
-             data-hint="Delete"
-             style="font-size: 1.1rem; "
-             v-on="click: askForDeleteConfirmation(streak, $event)">✕</a>
-        </li>
-      </ul>
+    <div class="small-4 column" style="text-align: right;">
+      <span style="font-size: 1.4375rem"></span>
+      <a class="z-icon hint--left hint--rounded hint--no-animate"
+         data-hint="Edit"
+         style="font-size: 1.1rem; "
+         v-on="click: edit(streak, $event)"
+         v-show="streak.name">
+        <i class="icon-settings"></i>
+      </a>
+      <a class="z-icon hint--left hint--rounded hint--no-animate"
+         data-hint="Delete"
+         style="font-size: 1.1rem; margin-left: 18px"
+         v-on="click: askForDeleteConfirmation(streak, $event)">
+        <i class="icon-close"></i>
+      </a>
     </div>
   </div>
-  <div class="row">
-    <div class="large-12 column">
-      <hr style="margin-top: 0">
-    </div>
-  </div>
-  <div v-component="{{activeView ? activeView : 'streak'}}" v-with="{index: $index, streak: streak}"></div>
+  <div v-component="{{streak.name ? (activeView ? activeView : 'streak') : 'streak-settings'}}"
+       v-with="{index: $index, existing: !!streak.name, streak: streak}"></div>
+  <br/>
 </div>

@@ -2,7 +2,6 @@
   <div class="row">
     <div class="small-3 column">
       <a href="/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
-      <!--<h2 class="logo medium"><a href="/">strk.io</a></h2>-->
     </div>
     <div class="small-9 column">
       <ul class="toolbar inline-list" style="float: right">
@@ -12,13 +11,18 @@
             <a class="z-icon hint--left hint--rounded hint--no-animate"
                data-hint="Synchronize"
                style="font-size: 1.1rem;"
-               v-on="click: sync">⟲</a>
+               v-on="click: sync">
+              <i class="icon-refresh"></i>
+            </a>
           </span>
         </li>
         <li v-if="(signedIn && owner) || draft">
           <a class="z-icon hint--left hint--rounded hint--no-animate"
              data-hint="Add new streak"
-             v-on="click: addNewStreak">╋</a>
+             style="font-size: 1.1rem;"
+             v-on="click: addNewStreak">
+            <i class="icon-plus"></i>
+          </a>
         </li>
         <li v-if="draft && signedIn">
           <a v-on="click: saveAsGist">Save as Gist</a>
@@ -27,7 +31,13 @@
           <a href="https://github.com/login/oauth/authorize?client_id={{ clientId }}&scope=gist&redirect_uri={{ redirectURL | encode }}">Sign in with Github</a>
         </li>
         <li v-if="signedIn">
-          <a v-on="click: signOut">Sign out</a>
+          <a class="hide-for-small" v-on="click: signOut">Sign out</a>
+          <a class="show-for-small z-icon hint--left hint--rounded hint--no-animate"
+             data-hint="Sign out"
+             style="font-size: 1.1rem;"
+             v-on="click: signOut">
+            <i class="icon-login"></i>
+          </a>
         </li>
       </ul>
     </div>
