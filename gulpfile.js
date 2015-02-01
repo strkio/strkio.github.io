@@ -171,25 +171,28 @@ gulp.task('lint:scripts', function () {
     .pipe($.jscs());
 });
 
-gulp.task('serve', ['clean', 'build:stylesheets', 'build:html'], function () {
+gulp.task('serve', ['clean'], function (cb) {
   var webpackConfig = Object.create(webpackConfigTemplate);
   webpackConfig.devtool = 'eval'; // http://webpack.github.io/docs/configuration.html#devtool
   webpackConfig.output = {path: '/', filename: 'scripts/[name].js'};
   webpackConfig.plugins || (webpackConfig.plugins = []);
   webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
     'thirdparty', 'scripts/thirdparty.js'));
-  $.connect.server({
-    root: ['build', 'src', '.'],
-    port: 8000,
-    middleware: function () {
-      return [
-        webpackMiddleware(webpack(webpackConfig))
-      ];
-    }
+  runSequence(['build:stylesheets', 'build:html'], function () {
+    $.connect.server({
+      root: ['build', 'src', '.'],
+      port: 8000,
+      middleware: function () {
+        return [
+          webpackMiddleware(webpack(webpackConfig))
+        ];
+      }
+    });
+    gulp.watch(src.css, ['build:stylesheets']);
+    gulp.watch(src.js, ['lint:scripts']);
+    gulp.watch(src.html, ['build:html']);
+    cb();
   });
-  gulp.watch(src.css, ['build:stylesheets']);
-  gulp.watch(src.js, ['lint:scripts']);
-  gulp.watch(src.html, ['build:html']);
 });
 
 gulp.task('serve:build', function () {
