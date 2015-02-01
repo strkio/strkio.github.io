@@ -28,7 +28,16 @@
           <a v-on="click: saveAsGist">Save as Gist</a>
         </li>
         <li v-if="!signedIn">
-          <a href="https://github.com/login/oauth/authorize?client_id={{ clientId }}&scope=gist&redirect_uri={{ redirectURL | encode }}">Sign in with Github</a>
+          <a class="hide-for-small"
+             href="https://github.com/login/oauth/authorize?client_id={{ clientId }}&scope=gist&redirect_uri={{ redirectURL | encode }}">
+            Sign in with GitHub
+          </a>
+          <a class="show-for-small z-icon hint--left hint--rounded hint--no-animate"
+             data-hint="Sign in with GitHub"
+             style="font-size: 1.1rem;"
+             href="https://github.com/login/oauth/authorize?client_id={{ clientId }}&scope=gist&redirect_uri={{ redirectURL | encode }}">
+            <i class="icon-login"></i>
+          </a>
         </li>
         <li v-if="signedIn">
           <a class="hide-for-small" v-on="click: signOut">Sign out</a>
@@ -36,7 +45,7 @@
              data-hint="Sign out"
              style="font-size: 1.1rem;"
              v-on="click: signOut">
-            <i class="icon-login"></i>
+            <i class="icon-logout"></i>
           </a>
         </li>
       </ul>
