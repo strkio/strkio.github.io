@@ -52,6 +52,13 @@
     </div>
   </div>
 </header>
+<div v-if="!loaded"
+     style="padding-top: 32px"
+     class="sk-spinner sk-spinner-three-bounce">
+  <div class="sk-bounce1"></div>
+  <div class="sk-bounce2"></div>
+  <div class="sk-bounce3"></div>
+</div>
 <div v-if="set" v-component="streak-set" v-ref="streak-set" v-with="set"></div>
 <div v-if="err">
   <div class="row" style="text-align: center;">

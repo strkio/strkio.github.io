@@ -14,7 +14,15 @@
   <link rel="shortcut icon" href="favicon.ico"/>
   <!-- todo: no-js check -->
 </head>
-<body v-cloak>
+<body>
+<div id="application">
+  <div style="padding-top: 32px"
+       class="sk-spinner sk-spinner-three-bounce">
+    <div class="sk-bounce1"></div>
+    <div class="sk-bounce2"></div>
+    <div class="sk-bounce3"></div>
+  </div>
+</div>
 <script type="text/javascript" src="scripts/thirdparty.js"></script>
 <!-- @exclude NODE_ENV=='production' -->
 <script type="text/javascript" src="scripts/dev-mode.js"></script>

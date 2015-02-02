@@ -17,7 +17,7 @@ function bootstrapApp(data) {
     data: Vue.util.extend(data || {}, {
       signedIn: !!oauthToken
     })
-  }).$mount('body');
+  }).$mount('#application');
 }
 
 if (qs.code && !oauthToken) {
@@ -51,7 +51,7 @@ if (qs.code && !oauthToken) {
     // document.body.removeAttribute('v-cloak');
     new Vue({
       template: require('../templates/index.html'),
-      el: 'body',
+      el: '#application',
       data: {
         clientId: conf.clientId
       }
