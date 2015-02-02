@@ -2,6 +2,7 @@ var conf = require('./conf');
 
 var Vue = require('vue');
 var GitHubGist = require('strkio-storage-githubgist');
+var HttpStatus = require('http-status');
 
 function CachedGitHubGist(gist) {
   this.gist = gist;
@@ -96,18 +97,28 @@ module.exports = Vue.extend({
     this.$watch('set.streaks', function () {
       (init) ? (init = false) : this.update();
     }.bind(this));
+    this.$data.$add('loaded', false);
     if (this.storage) {
       this.storage.fetch(function (err, data) {
-        // todo: error-handling, 404 in particular
+        if (err) {
+          var e = new Error();
+          e.status = err.status || 500;
+          e.message = HttpStatus.getStatusText(err.status);
+          this.$data.$add('err', e);
+          this.$data.loaded = true;
+          return;
+        }
         data || (data = {streaks: []});
         this.$data.owner =
           data.owner === localStorage.getItem('strkio_user');
         this.$data.set = data;
+        this.$data.loaded = true;
       }.bind(this));
     } else {
       var data = JSON.parse(localStorage.getItem('strkio-draft'));
       data || (data = {streaks: []});
       this.$data.set = data;
+      this.$data.loaded = true;
     }
   },
   methods: {

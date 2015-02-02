@@ -13,7 +13,7 @@ var webpackConfigTemplate = {
     index: './src/scripts/index.js',
     thirdparty: [
       'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
-      'fastclick', 'strkio-storage-githubgist'
+      'fastclick', 'http-status', 'strkio-storage-githubgist'
     ],
     'dev-mode': './src/scripts/dev-mode.js'
   },

@@ -4,8 +4,8 @@
       <a href="/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
     </div>
     <div class="small-9 column">
-      <ul class="toolbar inline-list" style="float: right">
-        <li v-if="signedIn && !draft && owner">
+      <ul class="toolbar inline-list" style="float: right" v-if="loaded">
+        <li v-if="signedIn && !draft && owner && !err">
           <!--todo: data-hint="Synchronize (last synchronized 1 day ago)"-->
           <span style="display: inline !important;">
             <a class="z-icon hint--left hint--rounded hint--no-animate"
@@ -16,7 +16,7 @@
             </a>
           </span>
         </li>
-        <li v-if="(signedIn && owner) || draft">
+        <li v-if="((signedIn && owner) || draft) && !err">
           <a class="z-icon hint--left hint--rounded hint--no-animate"
              data-hint="Add new streak"
              style="font-size: 1.1rem;"
@@ -24,7 +24,7 @@
             <i class="icon-plus"></i>
           </a>
         </li>
-        <li v-if="draft && signedIn">
+        <li v-if="draft && signedIn && !err">
           <a v-on="click: saveAsGist">Save as Gist</a>
         </li>
         <li v-if="!signedIn">
@@ -53,6 +53,15 @@
   </div>
 </header>
 <div v-if="set" v-component="streak-set" v-ref="streak-set" v-with="set"></div>
+<div v-if="err">
+  <div class="row" style="text-align: center;">
+    <div class="column small-12">
+      <div style="font-size: 2.75rem; margin-top: 18px">{{ err.status }}</div>
+      <p style="text-transform: lowercase; margin-bottom: 6px">({{ err.message }})</p>
+      <p style="font-size: 0.8rem;">If you believe this is an error, please <a href="https://github.com/strkio/strkio.github.io/issues">open an issue on GitHub</a>.</p>
+    </div>
+  </div>
+</div>
 <footer>
   <a href="https://github.com/strkio/strkio-api-server">API</a> |
   <a href="https://github.com/strkio/hubot-strkio">Hubot package</a> |
