@@ -156,6 +156,7 @@ gulp.task('clean', function (cb) {
 
 gulp.task('deploy', function (cb) {
   buildBranch({
+    ignore: ['bower_components'],
     folder: 'build',
     domain: 'strk.io',
     branch: 'master'

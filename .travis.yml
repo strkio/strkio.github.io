@@ -1,4 +1,8 @@
 language: node_js
-script: gulp lint
 node_js:
   - 0.10
+pre_install
+script: if [[ $TRAVIS_REPO_SLUG == "strkio/strkio.github.io" && $TRAVIS_BRANCH == "stable" && $TRAVIS_PULL_REQUEST == "false" ]]; then ./.travis.deploy.sh; else ./node_modules/.bin/gulp lint; fi
+env:
+  global:
+    secure: mR37HWp8DQNC1d1ox3UtkwVtbmtxkHqKRnfZRX5pMN9qiPuRW6RFC/RiidoQH1UtNij2wmX/Vwba3EvtdO/E6HLQSgrAGhMnQm9aLVuIFmC215K7lbgCEoZ/3r9JMHW66/+CqjsxnvrthLAaS6frQWoV9DAOGZmV79BcNBZPqBU=
