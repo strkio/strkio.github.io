@@ -7,5 +7,5 @@ module.exports = {
    * Used to exchange "code" for OAuth (access) token.
    * @see https://github.com/prose/gatekeeper
    */
-  gatekeeperURL: 'http://oauth.strk.io'
+  gatekeeperURL: 'http://gk.strk.io'
 };
