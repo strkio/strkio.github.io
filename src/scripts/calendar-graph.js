@@ -119,12 +119,6 @@ function nf(f) {
   return function () {return +f.apply(null, arguments);};
 }
 
-//CalendarGraph.prototype.fitsIn = function (el, trail) {
-//	var width = el.getBoundingClientRect().width;
-//	return trail === ~~(trail * width /
-//		this._svg.getComputedStyle('width'));
-//};
-
 function diffInWeeks(startDate, endDate) {
   return Math.ceil((
       moment(endDate).add(1, 'd').diff(moment(startDate), 'days') +
@@ -145,6 +139,29 @@ CalendarGraph.prototype.determineClientRect = function (endDate, trail) {
   return {width: width, height: height};
 };
 
+CalendarGraph.prototype.calculateTrail = function (el, endDate) {
+  var cellSize = this.options.cellSize;
+  var strokeSize = this.options.strokeSize;
+
+  var boundingClientRect = el.getBoundingClientRect();
+  var trail = ~~(boundingClientRect.width / ((cellSize + strokeSize) * 5));
+  if (trail < 12) {
+    var clientRect = this.determineClientRect(endDate, trail + 1);
+    if (clientRect.width < boundingClientRect.width) {
+      trail++;
+    }
+  }
+  return trail;
+};
+
+function debounce(fn, timeout) {
+  var h;
+  return function () {
+    h && clearTimeout(h);
+    h = setTimeout(function () {fn();}, timeout);
+  };
+}
+
 CalendarGraph.prototype.attach = function (el) {
   var day = nf(d3.time.format('%w'));
   var	week = nf(d3.time.format('%U'));
@@ -163,15 +180,15 @@ CalendarGraph.prototype.attach = function (el) {
   var clientRect;
 
   if (trail === 'auto') {
-    var boundingClientRect = el.getBoundingClientRect();
-    trail = ~~(boundingClientRect.width /
-      ((cellSize + strokeSize) * 5));
-    if (trail < 12) {
-      clientRect = this.determineClientRect(endDate, trail + 1);
-      if (clientRect.width < boundingClientRect.width) {
-        trail++;
+    trail = this.calculateTrail(el, endDate);
+    var resizeListener = debounce(function () {
+      if (this.calculateTrail(el, endDate) !== trail) {
+        this.detach();
+        window.removeEventListener('resize', resizeListener);
+        this.attach(el);
       }
-    }
+    }.bind(this), 300);
+    window.addEventListener('resize', resizeListener);
   }
 
   clientRect = this.determineClientRect(endDate, trail);
@@ -268,6 +285,10 @@ CalendarGraph.prototype.attach = function (el) {
   }.bind(this));
 
   return this;
+};
+
+CalendarGraph.prototype.detach = function () {
+  this._containerSelector.selectAll('svg').remove();
 };
 
 CalendarGraph.prototype.updateValue = function (date, value) {
