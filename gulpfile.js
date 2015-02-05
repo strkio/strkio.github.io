@@ -12,7 +12,8 @@ var webpackConfigTemplate = {
   entry: {
     index: './src/scripts/index.js',
     thirdparty: [
-      'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
+      'Array.prototype.find', 'Array.prototype.findIndex', 'smoothscroll',
+      'raf.js', 'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
       'fastclick', 'http-status', 'strkio-storage-githubgist'
     ],
     'dev-mode': './src/scripts/dev-mode.js'
@@ -197,7 +198,7 @@ gulp.task('serve', ['clean'], function (cb) {
 });
 
 gulp.task('serve:build', function () {
-  $.connect.server({root: 'build', port: 9000});
+  $.connect.server({root: 'build'});
 });
 
 gulp.task('usemin', function () {

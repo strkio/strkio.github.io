@@ -56,9 +56,18 @@ module.exports = Vue.extend({
       }
     },
     add: function () {
-      this.streaks.push({
-        data: {}
+      var pendingStreakIndex = this.streaks.findIndex(function (streak) {
+        return !streak.name;
       });
+      if (!~pendingStreakIndex) {
+        this.streaks.push({
+          data: {}
+        });
+        pendingStreakIndex = this.streaks.length - 1;
+      }
+      Vue.nextTick(function () {
+        this._children[pendingStreakIndex].$el.scrollIntoView(false);
+      }.bind(this));
     },
     remove: function (streak) {
       this.streaks.$remove(streak);
