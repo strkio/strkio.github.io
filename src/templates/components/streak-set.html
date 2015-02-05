@@ -14,7 +14,7 @@
           {{ streak.name }}
         </span>
     </div>
-    <div class="small-4 column" style="text-align: right;">
+    <div class="small-4 column" style="text-align: right;" v-if="!readOnly">
       <span style="font-size: 1.4375rem"></span>
       <a class="z-icon hint--left hint--rounded hint--no-animate"
          data-hint="Edit"
