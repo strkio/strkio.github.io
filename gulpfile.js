@@ -59,13 +59,17 @@ var src = {
 
 gulp.task('build', function (cb) {
   optimize = true;
-  runSequence('clean', [
-    'build:favicon',
-    'build:fonts',
-    'build:html',
-    'build:scripts',
-    'build:stylesheets'
-  ], 'build:rev', cb);
+  runSequence(
+    'clean', [
+      'build:favicon',
+      'build:fonts',
+      'build:html',
+      'build:scripts',
+      'build:stylesheets'
+    ],
+    'build:rev',
+    'build:manifest',
+    cb);
 });
 
 gulp.task('build:favicon', function () {
@@ -92,10 +96,20 @@ gulp.task('build:html', function () {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('build:rev', function () {
+gulp.task('build:manifest', function () {
+  return gulp.src(['build/**'])
+    .pipe($.manifest({
+      hash: true,
+      filename: 'cache.manifest',
+      exclude: 'cache.manifest'
+    }))
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:rev', function (cb) {
   var revved = [];
   var filter = $.filter(['**', '!index.html']);
-  return gulp.src([
+  gulp.src([
     'build/scripts/*.js',
     'build/stylesheets/*.css',
     'build/favicon.ico',
@@ -113,7 +127,7 @@ gulp.task('build:rev', function () {
     }))
     .pipe($.revReplace({replaceInExtensions: '.html'}))
     .pipe(gulp.dest('build'))
-    .on('end', function (cb) {
+    .on('end', function () {
       del(revved, cb);
     });
 });
@@ -129,6 +143,7 @@ gulp.task('build:scripts', function (cb) {
         warnings: false
       }
     }));
+    delete webpackConfig.entry['dev-mode'];
   }
   webpackConfig.output = {filename: 'build/scripts/[name].js'};
   webpack(webpackConfig, function (err, stats) {
@@ -198,11 +213,5 @@ gulp.task('serve', ['clean'], function (cb) {
 });
 
 gulp.task('serve:build', function () {
-  $.connect.server({root: 'build'});
-});
-
-gulp.task('usemin', function () {
-  return gulp.src('src/index.html')
-    .pipe($.usemin())
-    .pipe(gulp.dest('build/'));
+  $.connect.server({root: 'build', port: 8000});
 });

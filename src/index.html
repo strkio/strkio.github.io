@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
-<html class="no-js" lang="en" >
+<!-- @exclude NODE_ENV=='production' -->
+<html class="no-js" lang="en">
+<!-- @endexclude -->
+<!-- @if NODE_ENV=='production' -->
+<html class="no-js" lang="en" manifest="cache.manifest">
+<!-- @endif -->
 <!-- todo: WARN: IE lt 9 is not supported -->
 <!-- todo: line chart -->
 <!-- todo: allow to merge multiple streaks together -->
