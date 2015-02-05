@@ -111,6 +111,10 @@ module.exports = Vue.extend({
         data || (data = {streaks: []});
         this.$data.owner =
           data.owner === localStorage.getItem('strkio_user');
+        if (this.$data.owner) {
+          localStorage.setItem('strkio_lastOpenStreak',
+            'gist:' + this.$data.gist);
+        }
         this.$data.set = data;
         this.$data.loaded = true;
       }.bind(this));
@@ -163,6 +167,7 @@ module.exports = Vue.extend({
       // todo: move authentication-specific code to a separate script
       localStorage.removeItem('strkio_user');
       localStorage.removeItem('strkio_oauthToken');
+      localStorage.removeItem('strkio_lastOpenStreak');
       window.location = '/';
       // todo: (?) DELETE /applications/:client_id/tokens/:access_token
     }

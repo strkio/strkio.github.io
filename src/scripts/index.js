@@ -34,11 +34,8 @@ if (qs.code && !oauthToken) {
       });
   });
 } else if (qs.gist) {
-  var gist = qs.gist;
-  localStorage.setItem('strkio_lastOpenStreak', 'gist:' + gist);
-  bootstrapApp({gist: gist});
+  bootstrapApp({gist: qs.gist});
 } else if (qs.hasOwnProperty('draft')) {
-  localStorage.setItem('strkio_lastOpenStreak', 'draft');
   bootstrapApp();
 } else {
   if (oauthToken && !lastOpenStreak.indexOf('gist:')) {
