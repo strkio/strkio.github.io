@@ -30,6 +30,7 @@ header {
 }
 
 .toolbar {
+  padding-top: 5px;
   margin-top: 0.6rem;
   margin-bottom: 0.6rem;
   height: 47px;
