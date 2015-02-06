@@ -47,7 +47,7 @@ hr {
   display: none;
 }
 
-footer {
+.sticky-footer {
   position: absolute;
   right: 0;
   bottom: 0;
