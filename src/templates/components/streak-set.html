@@ -31,7 +31,9 @@
       </a>
     </div>
   </div>
-  <div v-component="{{streak.name ? (activeView ? activeView : 'streak') : 'streak-settings'}}"
+  <div class="animated"
+       v-transition="fade"
+       v-component="{{streak.name ? (activeView ? activeView : 'streak') : 'streak-settings'}}"
        v-with="{index: $index, existing: !!streak.name, streak: streak}"></div>
   <br/>
 </div>
