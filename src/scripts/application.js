@@ -1,64 +1,18 @@
-var conf = require('./conf');
-
 var Vue = require('vue');
-var GitHubGist = require('strkio-storage-githubgist');
 var HttpStatus = require('http-status');
 
-function CachedGitHubGist(gist) {
-  this.gist = gist;
+var config = require('./conf');
+var session = require('./session');
+var GitHubGist = require('./session-backed-githubgist');
+
+function synchronize(gist, cb) {
+  gist.save(function (err) {
+    if (err) {
+      return cb(err);
+    }
+    gist.fetch({force: true}, cb);
+  });
 }
-
-CachedGitHubGist.prototype.fetch = function (callback) {
-  var cachedItemKey = 'strkio-gist-' + this.gist.data.id;
-  var cachedItem = localStorage.getItem(cachedItemKey + '-updated') ||
-    localStorage.getItem(cachedItemKey);
-  if (cachedItem) {
-    return callback(null, JSON.parse(cachedItem));
-  }
-  this.gist.fetch(function (err, self) {
-    // do not cache Gist unless it belongs to the current user,
-    // this way we will always get the latest snapshot
-    if (err) {
-      return callback(err);
-    }
-    var data = self.data;
-    var owner = data.owner === localStorage.getItem('strkio_user');
-    if (owner) {
-      localStorage.setItem(cachedItemKey, JSON.stringify(data));
-    }
-    callback(null, data);
-  });
-};
-
-CachedGitHubGist.prototype.save = function (data, callback) {
-  var cachedItemKey = 'strkio-gist-' + this.gist.data.id;
-  if (typeof data === 'function') {
-    callback = data;
-    data = JSON.parse(localStorage.getItem(cachedItemKey + '-updated') ||
-      localStorage.getItem(cachedItemKey));
-  } else {
-    localStorage.setItem(cachedItemKey + '-updated', JSON.stringify(data));
-  }
-  this.gist.data = JSON.parse(localStorage.getItem(cachedItemKey));
-  this.gist.save(data, function (err) {
-    if (!err) {
-      localStorage.setItem(cachedItemKey, JSON.stringify(data));
-      localStorage.removeItem(cachedItemKey + '-updated');
-    }
-    callback.apply(null, arguments);
-  });
-};
-
-CachedGitHubGist.prototype.sync = function (callback) {
-  var cachedItemKey = 'strkio-gist-' + this.gist.data.id;
-  this.save(function (err) {
-    if (err) {
-      return callback(err);
-    }
-    localStorage.removeItem(cachedItemKey);
-    this.fetch(callback);
-  }.bind(this));
-};
 
 module.exports = Vue.extend({
   template: require('../templates/application.html'),
@@ -66,110 +20,134 @@ module.exports = Vue.extend({
     'streak-set': require('./components/streak-set')
   },
   filters: {
-    encode: function (value) {
-      return encodeURIComponent(value);
-    }
+    encode: require('./filters/encode-uri-component')
   },
   events: {
-    'streak-updated': function () {
-      this.update();
+    'set-updated': function () {
+      this.commitChanges();
       return false;
     }
   },
-  compiled: function () {
-    this.$data.$add('clientId', conf.clientId);
-    if (!localStorage.getItem('strkio_oauthToken')) {
-      this.$data.$add('redirectURL', window.location.href);
-    }
-    if (this.$data.gist) {
-      this.storage = new CachedGitHubGist(new GitHubGist(
-        this.$data.gist,
-        {oauthToken: localStorage.getItem('strkio_oauthToken')}
-      ));
+  created: function () {
+    var $data = this.$data;
+    $data.$add('clientId', config.clientId);
+    $data.$add('redirectURL', window.location.href);
+    if ($data.gistId) {
+      this.gist = new GitHubGist(
+        $data.gistId, {oauthToken: session.get('oauthToken')});
     } else {
-      this.$data.$add('draft', true);
+      $data.$add('draft', true);
     }
-  },
-  ready: function () {
-    this.$data.$add('owner', true);
-    this.$data.$add('set', {});
-    var init = true;
-    this.$watch('set.streaks', function () {
-      (init) ? (init = false) : this.update();
-    }.bind(this));
-    this.$data.$add('loaded', false);
-    if (this.storage) {
-      this.storage.fetch(function (err, data) {
+    $data.$add('owner', true);
+    $data.$add('syncInProgress', false);
+    $data.$add('updatePending', false);
+    $data.$add('loaded', false);
+    var cb = function (err, data) {
+      err && ($data.$add('err', err));
+      data && ($data.$add('set', data));
+      this.$watch('set.streaks', this.$emit.bind(this, 'set-updated'));
+      $data.loaded = true;
+    }.bind(this);
+    if (this.gist) {
+      this.gist.fetch(function (err, data) {
         if (err) {
           var e = new Error();
           e.status = err.status || 500;
           e.message = HttpStatus.getStatusText(err.status);
-          this.$data.$add('err', e);
-          this.$data.loaded = true;
-          return;
+          return cb(e);
         }
-        data || (data = {streaks: []});
-        this.$data.owner =
-          data.owner === localStorage.getItem('strkio_user');
-        if (this.$data.owner) {
-          localStorage.setItem('strkio_lastOpenStreak',
-            'gist:' + this.$data.gist);
+        $data.updatePending = this.gist.updatePending();
+        $data.owner = data.owner === session.get('user');
+        if ($data.owner) {
+          session.set('lastOpenStreak', 'gist:' + data.id);
         }
-        this.$data.set = data;
-        this.$data.loaded = true;
+        cb(null, data);
       }.bind(this));
     } else {
-      var data = JSON.parse(localStorage.getItem('strkio-draft'));
+      var data = JSON.parse(session.get('draft'));
       data || (data = {streaks: []});
-      this.$data.set = data;
-      this.$data.loaded = true;
+      cb(null, data);
     }
   },
   methods: {
-    update: function () {
-      if (this.$data.draft) {
-        localStorage.setItem('strkio-draft', JSON.stringify(this.set));
-      } else {
-        this.storage.save(this.set, function () {
-          // todo: error handling
+    commitChanges: function () {
+      // todo: sort out race conditions
+      console.log('commit');
+      var $data = this.$data;
+      var gist = this.gist;
+      if (gist) {
+        gist.save(this.set, function (err) {
+          if (err) {
+            console.error(err);
+          }
+          $data.updatePending = gist.updatePending();
         });
+      } else {
+        session.set('draft', JSON.stringify(this.set));
       }
     },
     sync: function () {
-      // todo: throttle in case of gistStorage
-      this.storage.sync(function (err, data) {
-        // todo: error handling
-        if (!err) {
-          this.$data.set = data;
-        }
-      }.bind(this));
+      var $data = this.$data;
+      if ($data.syncInProgress) {
+        return;
+      }
+      var gist = this.gist;
+      $data.syncInProgress = true;
+      $data.wrn = null;
+      Vue.nextTick(function () {
+        synchronize(gist, function (err, data) {
+          if (err) {
+            $data.wrn = {
+              message: 'Synchronization failed (GitHub returned ' +
+                err.status + ')'
+            };
+          }
+          $data.set = data;
+          $data.syncInProgress = false;
+          $data.updatePending = gist.updatePending();
+        });
+      }, this);
     },
     addNewStreak: function () {
-      this.$broadcast('add-streak');
+      var $data = this.$data;
+      if ($data.syncInProgress) {
+        return;
+      }
+      this.$broadcast('new-streak-requested');
       // directives/ref gets torn away on element removal
       // this.$['streak-set'].add();
     },
     saveAsGist: function () {
+      var $data = this.$data;
+      if ($data.syncInProgress) {
+        return;
+      }
       var gist = new GitHubGist(this.set, {
-        oauthToken: localStorage.getItem('strkio_oauthToken')
+        oauthToken: session.get('oauthToken')
       });
-      gist.save(function (err, self) {
-        // todo: proper error handling
-        if (err) {
-          console.error(err);
-        } else {
-          // todo: clear draft
-          window.location.search = '?gist=' + self.data.id;
-        }
-      });
+      $data.syncInProgress = true;
+      $data.wrn = null;
+      Vue.nextTick(function () {
+        gist.save(function (err, data) {
+          if (err) {
+            $data.wrn = {
+              message: 'Failed to create a new gist (GitHub returned ' +
+              err.status + ')'
+            };
+          } else {
+            session.remove('draft');
+            window.location.hash = '#/gists/' + data.id;
+          }
+          $data.syncInProgress = false;
+        });
+      }, this);
     },
     signOut: function () {
-      // todo: move authentication-specific code to a separate script
-      localStorage.removeItem('strkio_user');
-      localStorage.removeItem('strkio_oauthToken');
-      localStorage.removeItem('strkio_lastOpenStreak');
+      session.keys().filter(function (key) {
+        return key.indexOf('gist-') || !key.endsWith('-updated');
+      }).forEach(session.remove);
+      // todo: use session.destroy(); instead
       window.location = '/';
-      // todo: (?) DELETE /applications/:client_id/tokens/:access_token
     }
   }
 });

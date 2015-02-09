@@ -1,10 +1,18 @@
-<header>
+<header class="fixed-header">
   <div class="row">
     <div class="small-3 column">
       <a href="/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
     </div>
     <div class="small-9 column">
       <ul class="toolbar inline-list" style="float: right" v-if="loaded">
+        <li v-if="updatePending">
+          <a class="hint--left hint--rounded hint--no-animate"
+             data-hint="Some changes where not &#10;propagated. Click to retry."
+             style="font-size: 1.1rem;"
+             v-on="click: commitChanges">
+            <i class="icon-energy"></i>
+          </a>
+        </li>
         <li v-if="signedIn && !draft && owner && !err">
           <!--todo: data-hint="Synchronize (last synchronized 1 day ago)"-->
           <span style="display: inline !important;">
@@ -24,7 +32,7 @@
             <i class="icon-plus"></i>
           </a>
         </li>
-        <li v-if="draft && signedIn && !err">
+        <li v-if="draft && signedIn && !err && set.streaks.length">
           <a v-on="click: saveAsGist">Save as Gist</a>
         </li>
         <li v-if="!signedIn">
@@ -52,14 +60,29 @@
     </div>
   </div>
 </header>
-<div v-if="!loaded"
+<div style="height: 67px; margin: 0"></div>
+<div v-if="!loaded || syncInProgress"
      style="padding-top: 32px"
      class="sk-spinner sk-spinner-three-bounce">
   <div class="sk-bounce1"></div>
   <div class="sk-bounce2"></div>
   <div class="sk-bounce3"></div>
 </div>
-<div v-if="set" v-component="streak-set" v-ref="streak-set" v-with="set"></div>
+<!-- todo: needs to be fixed-->
+<div class="alert-box error" v-if="wrn">
+  <div class="row">
+  <div class="column small-12">
+    {{ wrn.message }} <a v-on="click: wrn = null" class="close"><i class="icon-close"></i></a>
+  </div>
+  </div>
+</div>
+<div class="row" v-if="!set.streaks.length">
+  <div class="column small-12"
+       style="text-align: center; margin-top: 18px; font-size: 0.8rem; color: #a7adba">
+    EMPTY
+  </div>
+</div>
+<div v-if="set && !syncInProgress" v-component="streak-set" v-ref="streak-set" v-with="set" keep-alive></div>
 <div v-if="err">
   <div class="row" style="text-align: center;">
     <div class="column small-12">

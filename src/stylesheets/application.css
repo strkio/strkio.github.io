@@ -8,9 +8,15 @@
 @import "components/streak-set.css";
 @import "components/streak-settings.css";
 
-header {
-  /*background-color: rgba(239, 241, 245, 0.33);*/
+.fixed-header {
   border-bottom: solid var(--base07) 1px;
+  background-color: rgba(255, 255, 255, 0.92);
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 998;
+  height: 67px;
 }
 
 .logo.medium {

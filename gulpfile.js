@@ -12,11 +12,23 @@ var webpackConfigTemplate = {
   entry: {
     index: './src/scripts/index.js',
     thirdparty: [
-      'Array.prototype.find', 'Array.prototype.findIndex', 'smoothscroll',
-      'raf.js', 'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
-      'fastclick', 'http-status', 'strkio-storage-githubgist'
-    ],
-    'dev-mode': './src/scripts/dev-mode.js'
+      /* consider es6-shim or transpiler instead */
+      'Array.prototype.find',
+      'Array.prototype.findIndex',
+      'String.prototype.endsWith',
+      'smoothscroll',
+      'raf.js',
+      'd3',
+      'moment',
+      'pikaday',
+      'query-string',
+      'superagent',
+      'vue',
+      'fastclick',
+      'http-status',
+      'grapnel',
+      'strkio-storage-githubgist'
+    ]
   },
   resolve: {
     modulesDirectories: ['bower_components', 'node_modules'],
@@ -101,14 +113,14 @@ gulp.task('build:manifest', function () {
     .pipe($.manifest({
       hash: true,
       filename: 'cache.manifest',
-      exclude: 'cache.manifest'
+      exclude: ['cache.manifest', '404.html']
     }))
     .pipe(gulp.dest('build'));
 });
 
 gulp.task('build:rev', function (cb) {
   var revved = [];
-  var filter = $.filter(['**', '!index.html']);
+  var filter = $.filter(['**', '!index.html', '!404.html']);
   gulp.src([
     'build/scripts/*.js',
     'build/stylesheets/*.css',
@@ -193,6 +205,9 @@ gulp.task('serve', ['clean'], function (cb) {
   webpackConfig.devtool = 'eval'; // http://webpack.github.io/docs/configuration.html#devtool
   webpackConfig.output = {path: '/', filename: 'scripts/[name].js'};
   webpackConfig.plugins || (webpackConfig.plugins = []);
+  webpackConfig.plugins.push(new webpack.DefinePlugin({
+    __DEV__: true
+  }));
   webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
     'thirdparty', 'scripts/thirdparty.js'));
   runSequence(['build:stylesheets', 'build:html'], function () {
