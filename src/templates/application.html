@@ -82,7 +82,7 @@
     EMPTY
   </div>
 </div>
-<div v-if="set && !syncInProgress" v-component="streak-set" v-ref="streak-set" v-with="set" keep-alive></div>
+<div style="overflow: hidden" v-if="set && !syncInProgress" v-component="streak-set" v-ref="streak-set" v-with="set" keep-alive></div>
 <div v-if="err">
   <div class="row" style="text-align: center;">
     <div class="column small-12">
