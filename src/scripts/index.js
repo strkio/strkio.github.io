@@ -1,60 +1,49 @@
+var Vue = require('vue');
 var queryString = require('query-string');
 var request = require('superagent');
 
-var App = require('./application');
-var conf = require('./conf');
+var config = require('./conf');
+var session = require('./session');
+var router = require('./router');
 
-var Vue = require('vue');
-
-// todo: query router
-var qs = queryString.parse(window.location.search);
-// todo: move authentication-specific code to a separate script
-var oauthToken = localStorage.getItem('strkio_oauthToken');
-var lastOpenStreak = localStorage.getItem('strkio_lastOpenStreak') || '';
-
-function bootstrapApp(data) {
-  new App({
-    data: Vue.util.extend(data || {}, {
-      signedIn: !!oauthToken
-    })
-  }).$mount('#application');
+if (__DEV__) {
+  Vue.config.silent = false;
 }
 
+var qs = queryString.parse(window.location.search);
+var oauthToken = session.get('oauthToken');
+var lastOpenStreak = session.get('lastOpenStreak');
+
 if (qs.code && !oauthToken) {
-  // todo: error-handling
-  request.get(conf.gatekeeperURL + '/authenticate/' + qs.code, function (res) {
-    var accessToken = res.body.token;
-    request.get('https://api.github.com/user?access_token=' +	accessToken,
-      function (res) {
-        localStorage.setItem('strkio_user', res.body.login);
-        localStorage.setItem('strkio_oauthToken', accessToken);
-        var search = queryString.parse(location.search);
-        delete search.code;
-        location.search = queryString.stringify(search);
-      });
-  });
-} else if (qs.gist) {
-  var gist = qs.gist;
-  localStorage.setItem('strkio_lastOpenStreak', 'gist:' + gist);
-  bootstrapApp({gist: gist});
-} else if (qs.hasOwnProperty('draft')) {
-  localStorage.setItem('strkio_lastOpenStreak', 'draft');
-  bootstrapApp();
-} else {
-  if (oauthToken && !lastOpenStreak.indexOf('gist:')) {
-    window.location.search = '?gist=' + lastOpenStreak.split(':', 2)[1];
-  } else if (oauthToken) {
-    window.location.search = '?draft';
-  } else {
-    // todo: use lastOpenStreak as a redirectURL (github)
-    // todo: make body content by default (just hidden)
-    // document.body.removeAttribute('v-cloak');
-    new Vue({
-      template: require('../templates/index.html'),
-      el: '#application',
-      data: {
-        clientId: conf.clientId
+  // exchange ?code= for the OAuth (access) token
+  request.get(config.gatekeeperURL + '/authenticate/' + qs.code,
+    function (res) {
+      if (res.error) {
+        // not using router in order to reset query string
+        window.location = '/#/sign-in-failed';
+        return;
       }
+      var accessToken = res.body.token;
+      request.get('https://api.github.com/user?access_token=' +	accessToken,
+        function (res) {
+          if (res.error) {
+            window.location = '/#/sign-in-failed';
+            return;
+          }
+          session.set('user', res.body.login).set('oauthToken', accessToken);
+          window.location = '/' + window.location.hash;
+        });
     });
+} else {
+  if (qs.code) {
+    window.location = '/' + window.location.hash;
+  } else {
+    if (oauthToken && !(lastOpenStreak || '').indexOf('gist:')) {
+      router.navigate('/gists/' + lastOpenStreak.split(':', 2)[1]);
+    } else if (oauthToken) {
+      router.navigate('/draft');
+    } else {
+      router.navigate(router.fragment.get() || '/');
+    }
   }
 }

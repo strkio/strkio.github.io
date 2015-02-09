@@ -14,7 +14,7 @@
           {{ streak.name }}
         </span>
     </div>
-    <div class="small-4 column" style="text-align: right;">
+    <div class="small-4 column" style="text-align: right;" v-if="!readOnly">
       <span style="font-size: 1.4375rem"></span>
       <a class="z-icon hint--left hint--rounded hint--no-animate"
          data-hint="Edit"
@@ -31,7 +31,9 @@
       </a>
     </div>
   </div>
-  <div v-component="{{streak.name ? (activeView ? activeView : 'streak') : 'streak-settings'}}"
+  <div class="animated"
+       v-transition="fade"
+       v-component="{{streak.name ? (activeView ? activeView : 'streak') : 'streak-settings'}}"
        v-with="{index: $index, existing: !!streak.name, streak: streak}"></div>
   <br/>
 </div>

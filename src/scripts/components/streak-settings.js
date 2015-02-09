@@ -14,24 +14,25 @@ module.exports = Vue.extend({
     };
   },
   ready: function () {
-    this.$data.$add('existing', this.$data.existing);
+    var data = this.$data;
+    data.$add('existing', data.existing);
     ['name', 'startDate', 'days', 'range'].forEach(function (field) {
-      this.$data.$add(field + 'ValidationResult');
-    }.bind(this));
-    this.$data.$add('name', this.$data.streak.name);
-    this.$data.$add('startDate', this.$data.streak.startDate);
-    var excludedDays = this.$data.streak.excludedDays || [];
+      data.$add(field + 'ValidationResult');
+    });
+    data.$add('name', data.streak.name);
+    data.$add('startDate', data.streak.startDate);
+    var excludedDays = data.streak.excludedDays || [];
     for (var i = 0; i < 7; i++) {
-      this.$data.$add('excludeDay' + i, ~excludedDays.indexOf(i));
+      data.$add('excludeDay' + i, ~excludedDays.indexOf(i));
     }
-    var range = this.$data.streak.range || [];
-    this.$data.$add('range', range);
-    this.$data.$add('type', range.length ? 'number' : 'toggle');
-    this.$data.$add('inverted', !!this.$data.streak.inverted);
+    var range = data.streak.range || [];
+    data.$add('range', range);
+    data.$add('type', range.length ? 'number' : 'toggle');
+    data.$add('inverted', !!data.streak.inverted);
     // initialize "start date" selector
     var updateStartDate = function (d) {
-      this.$data.startDate = d ? moment(d).format('YYYY-MM-DD') : '';
-    }.bind(this);
+      data.startDate = d ? moment(d).format('YYYY-MM-DD') : '';
+    };
     var pikaday = new Pikaday({
       field: this.$$.datepicker,
       maxDate: new Date(),
@@ -45,8 +46,8 @@ module.exports = Vue.extend({
       }
       e.preventDefault();
     });
-    if (this.$data.startDate) {
-      pikaday.setDate(moment(this.$data.startDate).toDate());
+    if (data.startDate) {
+      pikaday.setDate(moment(data.startDate).toDate());
     }
   },
   methods: {
@@ -108,14 +109,14 @@ module.exports = Vue.extend({
         return;
       }
       var updatedSettings = {
-        name: this.name,
-        startDate: this.startDate || null,
+        name: this.$data.name,
+        startDate: this.$data.startDate || null,
         excludedDays: [],
-        range: this.range,
-        inverted: this.inverted
+        range: this.$data.range,
+        inverted: this.$data.inverted
       };
       for (var i = 0; i < 7; i++) {
-        if (this['excludeDay' + i]) {
+        if (this.$data['excludeDay' + i]) {
           updatedSettings.excludedDays.push(i);
         }
       }
@@ -124,12 +125,12 @@ module.exports = Vue.extend({
         streak.$add(key);
         streak[key] = updatedSettings[key];
       });
-      this.$dispatch('streak-updated');
+      this.$dispatch('set-updated');
       // @fixme: dispatch event instead
       this.$parent.restoreDefaultView({targetVM: this.$parent});
     },
     toggleDayExclusion: function (index) {
-      var key = ('excludeDay' + index);
+      var key = 'excludeDay' + index;
       this.$data[key] = !this.$data[key];
     }
   }

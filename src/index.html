@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
-<html class="no-js" lang="en" >
+<!-- @exclude NODE_ENV=='production' -->
+<html class="no-js" lang="en">
+<!-- @endexclude -->
+<!-- @if NODE_ENV=='production' -->
+<html class="no-js" lang="en" manifest="cache.manifest">
+<!-- @endif -->
 <!-- todo: WARN: IE lt 9 is not supported -->
 <!-- todo: line chart -->
 <!-- todo: allow to merge multiple streaks together -->
 <!-- todo: (off-canvas) list of streak sets -->
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>strk.io</title>
   <link rel="stylesheet" href="stylesheets/thirdparty.css"/>
   <link rel="stylesheet" href="stylesheets/index.css"/>
@@ -24,9 +28,6 @@
   </div>
 </div>
 <script type="text/javascript" src="scripts/thirdparty.js"></script>
-<!-- @exclude NODE_ENV=='production' -->
-<script type="text/javascript" src="scripts/dev-mode.js"></script>
-<!-- @endexclude -->
 <script type="text/javascript" src="scripts/index.js"></script>
 <!-- @if NODE_ENV=='production' -->
 <script>

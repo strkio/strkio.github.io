@@ -3,6 +3,7 @@
 @import "opensans-font.css";
 @import "simple-line-icons-font.css";
 @import "spinner.css";
+@import "vue.css";
 
 *,
 *:before,
@@ -46,7 +47,7 @@ hr {
   display: none;
 }
 
-footer {
+.sticky-footer {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -166,4 +167,98 @@ select.z-input:hover {
 .checkbox input[type="checkbox"] {
   margin-top: 6px;
   vertical-align: middle;
+}
+
+button.small, .button.small {
+  padding-top: 0.875rem;
+  padding-right: 1.45rem;
+  padding-bottom: 0.9375rem;
+  padding-left: 1.45rem;
+}
+
+.alert-box {
+  border: 0;
+  border-bottom: solid var(--base07) 1px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.alert-box.error {
+  /*background-color: var(--base08);*/
+  background-color: rgba(239, 241, 245, 0.33);
+  color: black;
+  /*background-color: color(var(--base08) tint(30%));*/
+}
+
+.alert-box .close {
+  color: black;
+  /*color: white;*/
+  font-size: 1.1rem;
+  padding-top: 2px;
+  right: 0;
+  padding-right: 15px;
+}
+
+.js-row {
+  /*background-color: #eff1f5; */
+  padding: 18px;
+}
+
+.js-row h2 {
+  margin-bottom: 12px;
+}
+
+.js-row .columns {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.strk-icon {
+  border: 1px solid;
+  border-radius: 100%; padding: 15px 15px 14px;
+}
+
+.strk-icon-red {
+  color: var(--base08);
+  border-color: var(--base08);
+}
+
+.strk-icon-orange {
+  color: var(--base09);
+  border-color: var(--base09);
+}
+
+.strk-icon-yellow {
+  color: var(--base0a);
+  border-color: var(--base0a);
+}
+
+.strk-icon-green {
+  color: var(--base0b);
+  border-color: var(--base0b);
+}
+
+.strk-icon-mint {
+  color: var(--base0c);
+  border-color: var(--base0c);
+}
+
+.strk-icon-blue {
+  color: var(--base0d);
+  border-color: var(--base0d);
+}
+
+.strk-icon-violet {
+  color: var(--base0e);
+  border-color: var(--base0e);
+}
+
+.strk-icon-brown {
+  color: var(--base0f);
+  border-color: var(--base0f);
+}
+
+.strk-inline-icon {
+  position: relative;
+  top: 1px;
 }

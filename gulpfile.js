@@ -12,10 +12,23 @@ var webpackConfigTemplate = {
   entry: {
     index: './src/scripts/index.js',
     thirdparty: [
-      'd3', 'moment', 'pikaday', 'query-string', 'superagent', 'vue',
-      'fastclick', 'http-status', 'strkio-storage-githubgist'
-    ],
-    'dev-mode': './src/scripts/dev-mode.js'
+      /* consider es6-shim or transpiler instead */
+      'Array.prototype.find',
+      'Array.prototype.findIndex',
+      'String.prototype.endsWith',
+      'smoothscroll',
+      'raf.js',
+      'd3',
+      'moment',
+      'pikaday',
+      'query-string',
+      'superagent',
+      'vue',
+      'fastclick',
+      'http-status',
+      'grapnel',
+      'strkio-storage-githubgist'
+    ]
   },
   resolve: {
     modulesDirectories: ['bower_components', 'node_modules'],
@@ -58,13 +71,17 @@ var src = {
 
 gulp.task('build', function (cb) {
   optimize = true;
-  runSequence('clean', [
-    'build:favicon',
-    'build:fonts',
-    'build:html',
-    'build:scripts',
-    'build:stylesheets'
-  ], 'build:rev', cb);
+  runSequence(
+    'clean', [
+      'build:favicon',
+      'build:fonts',
+      'build:html',
+      'build:scripts',
+      'build:stylesheets'
+    ],
+    'build:rev',
+    'build:manifest',
+    cb);
 });
 
 gulp.task('build:favicon', function () {
@@ -91,10 +108,20 @@ gulp.task('build:html', function () {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('build:rev', function () {
+gulp.task('build:manifest', function () {
+  return gulp.src(['build/**'])
+    .pipe($.manifest({
+      hash: true,
+      filename: 'cache.manifest',
+      exclude: ['cache.manifest', '404.html']
+    }))
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:rev', function (cb) {
   var revved = [];
-  var filter = $.filter(['**', '!index.html']);
-  return gulp.src([
+  var filter = $.filter(['**', '!index.html', '!404.html']);
+  gulp.src([
     'build/scripts/*.js',
     'build/stylesheets/*.css',
     'build/favicon.ico',
@@ -112,7 +139,7 @@ gulp.task('build:rev', function () {
     }))
     .pipe($.revReplace({replaceInExtensions: '.html'}))
     .pipe(gulp.dest('build'))
-    .on('end', function (cb) {
+    .on('end', function () {
       del(revved, cb);
     });
 });
@@ -128,6 +155,7 @@ gulp.task('build:scripts', function (cb) {
         warnings: false
       }
     }));
+    delete webpackConfig.entry['dev-mode'];
   }
   webpackConfig.output = {filename: 'build/scripts/[name].js'};
   webpack(webpackConfig, function (err, stats) {
@@ -177,6 +205,9 @@ gulp.task('serve', ['clean'], function (cb) {
   webpackConfig.devtool = 'eval'; // http://webpack.github.io/docs/configuration.html#devtool
   webpackConfig.output = {path: '/', filename: 'scripts/[name].js'};
   webpackConfig.plugins || (webpackConfig.plugins = []);
+  webpackConfig.plugins.push(new webpack.DefinePlugin({
+    __DEV__: true
+  }));
   webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
     'thirdparty', 'scripts/thirdparty.js'));
   runSequence(['build:stylesheets', 'build:html'], function () {
@@ -197,11 +228,5 @@ gulp.task('serve', ['clean'], function (cb) {
 });
 
 gulp.task('serve:build', function () {
-  $.connect.server({root: 'build', port: 9000});
-});
-
-gulp.task('usemin', function () {
-  return gulp.src('src/index.html')
-    .pipe($.usemin())
-    .pipe(gulp.dest('build/'));
+  $.connect.server({root: 'build', port: 8000});
 });

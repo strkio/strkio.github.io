@@ -57,19 +57,9 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
       'max="' + upperBoundary + '" ' +
       (cg.options.readOnly ? 'disabled ' : '') +
       '></input>' : ''));
-    //.attr('style', 'display: block;');
     var tooltipEL = tooltip[0][0];
     var offsetParentBCR = tooltipEL.offsetParent.getBoundingClientRect();
     var BCR = this.getBoundingClientRect();
-    /*
-     tooltip
-     .attr('style',
-     'display: block;' +
-     'left: ' + (BCR.left - offsetParentBCR.left -
-     tooltipEL.offsetWidth / 2 + cellSize / 2) + 'px;' +
-     'top: ' + (BCR.top - offsetParentBCR.top -
-     cellSize - tooltipEL.offsetHeight) + 'px;');
-     */
     var style = tooltipEL.style;
     style.left = (BCR.left - offsetParentBCR.left -
     tooltipEL.offsetWidth / 2 + cellSize / 2) + 'px';

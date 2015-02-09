@@ -17,5 +17,8 @@
   "trailing": true,
   "eqnull": true,
   "expr": true,
-  "sub": true
+  "sub": true,
+  "globals": {
+    "__DEV__": true
+  }
 }

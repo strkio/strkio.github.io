@@ -17,3 +17,7 @@
 .hint--rounded:after {
   border-radius: 2px;
 }
+
+.hint:after, [data-hint]:after {
+  white-space: pre;
+}
