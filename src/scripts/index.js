@@ -7,10 +7,10 @@ var session = require('./session');
 var router = require('./router');
 
 Vue.config.silent = !__DEV__;
+Vue.config.warnExpressionErrors = !!__DEV__;
 
 var qs = queryString.parse(window.location.search);
 var oauthToken = session.get('oauthToken');
-var lastOpenStreak = session.get('lastOpenStreak');
 
 if (qs.code && !oauthToken) {
   // exchange ?code= for the OAuth (access) token
@@ -29,19 +29,13 @@ if (qs.code && !oauthToken) {
             return;
           }
           session.set('user', res.body.login).set('oauthToken', accessToken);
-          window.location = '/' + window.location.hash;
+          window.location = qs['redirect_uri'];
         });
     });
 } else {
   if (qs.code) {
     window.location = '/' + window.location.hash;
   } else {
-    if (oauthToken && !(lastOpenStreak || '').indexOf('gist:')) {
-      router.navigate('/gists/' + lastOpenStreak.split(':', 2)[1]);
-    } else if (oauthToken) {
-      router.navigate('/draft');
-    } else {
-      router.navigate(router.fragment.get() || '/');
-    }
+    router.navigate(router.fragment.get() || '/');
   }
 }
