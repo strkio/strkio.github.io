@@ -6,9 +6,7 @@ var config = require('./conf');
 var session = require('./session');
 var router = require('./router');
 
-if (__DEV__) {
-  Vue.config.silent = false;
-}
+Vue.config.silent = !__DEV__;
 
 var qs = queryString.parse(window.location.search);
 var oauthToken = session.get('oauthToken');
