@@ -260,13 +260,15 @@ CalendarGraph.prototype.attach = function (el) {
       return d * (cellSize + strokeSize) + 2 * cellSize;
     });
 
+  var months = [startDate].concat(d3.time.months(startDate, endDate));
   svg.selectAll('.label-x')
-    .data([startDate].concat(d3.time.months(startDate, endDate))).enter()
+    .data(months).enter()
     .append('text')
     .text(monthNameFormat)
     .attr('class', 'label-x')
     .attr('x', function (d, i) {
       var shift = i === 1 ? cellSize * 2 + strokeSize * 2 : 0;
+      i === months.length - 1 && (shift -= 7);
       return dayX(d) + shift + strokeSize * 2 + 1;
     })
     .attr('y', function () {
