@@ -31,7 +31,10 @@ module.exports = Vue.extend({
   created: function () {
     var $data = this.$data;
     $data.$add('clientId', config.clientId);
-    $data.$add('redirectURL', window.location.href);
+    var wl = window.location;
+    var redirectURL = wl.protocol + '//' + wl.host + '/?redirect_uri=' +
+      encodeURIComponent(wl.protocol + '//' + wl.host + '/' + wl.hash);
+    $data.$add('redirectURL', redirectURL);
     if ($data.gistId) {
       this.gist = new GitHubGist(
         $data.gistId, {oauthToken: session.get('oauthToken')});

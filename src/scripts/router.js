@@ -5,6 +5,9 @@ var App = require('./application');
 var config = require('./conf');
 var session = require('./session');
 
+var oauthToken = session.get('oauthToken');
+var lastOpenStreak = session.get('lastOpenStreak');
+
 function mount(vue) {
   vue.$mount('#application');
 }
@@ -26,7 +29,7 @@ function mountSignIn() {
   }));
 }
 
-module.exports = Grapnel.listen({
+var router = module.exports = Grapnel.listen({
   '/features': function () {
     mount(new Vue({
       template: require('../templates/features.html')
@@ -39,10 +42,17 @@ module.exports = Grapnel.listen({
     mountApp({});
   },
   '/sign-in-failed': mountSignIn,
-  '/': mountSignIn,
   '/*': function (req, e) {
     if (!e.parent()) {
-      // todo: implement
+      if (oauthToken) {
+        if (lastOpenStreak && !lastOpenStreak.indexOf('gist:')) {
+          router.navigate('/gists/' + lastOpenStreak.split(':', 2)[1]);
+        } else {
+          router.navigate('/draft');
+        }
+      } else {
+        mountSignIn();
+      }
     }
   }
 });
