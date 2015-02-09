@@ -148,6 +148,9 @@ gulp.task('build:scripts', function (cb) {
   var webpackConfig = Object.create(webpackConfigTemplate);
   if (optimize) {
     webpackConfig.plugins || (webpackConfig.plugins = []);
+    webpackConfig.plugins.push(new webpack.DefinePlugin({
+      __DEV__: false
+    }));
     webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
       'thirdparty', 'build/scripts/thirdparty.js'));
     webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
