@@ -72,7 +72,6 @@ module.exports = Vue.extend({
   methods: {
     commitChanges: function () {
       // todo: sort out race conditions
-      console.log('commit');
       var $data = this.$data;
       var gist = this.gist;
       if (gist) {
