@@ -169,6 +169,10 @@ select.z-input:hover {
   vertical-align: middle;
 }
 
+.row {
+  max-width: 74em;
+}
+
 button.small, .button.small {
   padding-top: 0.875rem;
   padding-right: 1.45rem;
@@ -199,18 +203,19 @@ button.small, .button.small {
   padding-right: 15px;
 }
 
-.js-row {
-  /*background-color: #eff1f5; */
+.strk-feature-block {
   padding: 18px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
-.js-row h2 {
-  margin-bottom: 12px;
-}
-
-.js-row .columns {
-  margin-top: 28px;
+.strk-feature-block li {
+  padding-top: 20px;
   text-align: center;
+}
+
+.strk-feature-block .strk-feature-icon {
+  margin-bottom: 12px;
 }
 
 .strk-icon {

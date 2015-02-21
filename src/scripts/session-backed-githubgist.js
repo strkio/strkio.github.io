@@ -1,10 +1,33 @@
 var session = require('./session');
 var GitHubGist = require('strkio-storage-githubgist');
+var throttleAsync = require('./utils/throttle-async');
 
 function SessionBackedGitHubGist() {
   var args = Array.prototype.slice.call(arguments);
   this.gist = new (Function.prototype.bind.apply(GitHubGist,
     [null].concat(args)))();
+  this._pushOrigin = throttleAsync(function (callback) {
+    var cachedItemKey = 'gist-' + this.gist.data.id;
+    var updatedSnapshot = session.get(cachedItemKey + '-updated');
+    if (!updatedSnapshot) {
+      callback(null, this.gist.data);
+      return;
+    }
+    // reset gist to the original state
+    this.gist.data = JSON.parse(session.get(cachedItemKey));
+    this.gist.save(JSON.parse(updatedSnapshot), function (err, self) {
+      if (err) {
+        callback(err);
+      } else {
+        session.set(cachedItemKey, JSON.stringify(self.data));
+        // remove "updated snapshot" but only if it hasn't changed
+        if (updatedSnapshot === session.get(cachedItemKey + '-updated')) {
+          session.remove(cachedItemKey + '-updated');
+        }
+        callback(null, self.data);
+      }
+    });
+  }.bind(this), 1000);
 }
 
 SessionBackedGitHubGist.prototype.fetch = function (o, callback) {
@@ -41,25 +64,20 @@ SessionBackedGitHubGist.prototype.fetch = function (o, callback) {
 SessionBackedGitHubGist.prototype.save = function (data, callback) {
   var gistId = this.gist.data.id;
   if (gistId) {
-    // update existing gist
+    // update existing gist (local right away, remote in a throttled way)
     var cachedItemKey = 'gist-' + gistId;
     if (typeof data === 'function') {
+      // use latest local data
       callback = data;
-      data = JSON.parse(session.get(cachedItemKey + '-updated') ||
-        session.get(cachedItemKey));
+      data = JSON.parse(session.get(cachedItemKey + '-updated'));
+      if (!data) {
+        callback(null, this.gist.data);
+        return;
+      }
     } else {
       session.set(cachedItemKey + '-updated', JSON.stringify(data));
     }
-    this.gist.data = JSON.parse(session.get(cachedItemKey));
-    this.gist.save(data, function (err, self) {
-      if (err) {
-        callback(err);
-      } else {
-        session.set(cachedItemKey, JSON.stringify(self.data));
-        session.remove(cachedItemKey + '-updated');
-        callback(null, self.data);
-      }
-    });
+    this._pushOrigin(callback) || callback(null, data);
   } else {
     // create a new gist
     if (typeof data === 'function') {

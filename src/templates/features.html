@@ -1,13 +1,16 @@
 <header class="fixed-header">
   <div class="row">
     <div class="small-3 column">
-      <a href="/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
+      <a href="#/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
     </div>
     <div class="small-9 column">
       <ul class="toolbar inline-list" style="float: right">
         <li>
-          <a href="#/">
-            <i class="strk-inline-icon icon-arrow-left"></i> HOME
+          <a id="features-close-btn" href="#/"
+             class="hint--left hint--rounded hint--no-animate"
+             data-hint="Go back home"
+             style="font-size: 1.1rem;">
+            <i class="strk-inline-icon icon-close"></i>
           </a>
         </li>
       </ul>
@@ -15,52 +18,50 @@
   </div>
 </header>
 <div style="height: 67px; margin: 0"></div>
-<div class="js-row">
-  <div class="row">
-    <div class="columns medium-6 small-12">
-      <h2><i class="strk-icon strk-icon-green icon-cursor-move"></i></h2>
+<div class="row">
+  <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3 strk-feature-block">
+    <li>
+      <h2 class="strk-feature-icon"><i class="strk-icon strk-icon-green icon-cursor-move"></i></h2>
       <h3>Responsive</h3>
       <p>
         Designed mobile-first. Use it on your phone, tablet or desktop.
       </p>
-    </div>
-    <div class="columns medium-6 small-12">
-      <h2><i class="strk-icon strk-icon-blue icon-eye"></i></h2>
+    </li>
+    <li>
+      <h2 class="strk-feature-icon"><i class="strk-icon strk-icon-blue icon-eye"></i></h2>
       <h3>Transparent</h3>
       <p>
         Your data always stays with you (as a private Gist).
         Whenever you make a change, your browser talks to the GitHub API directly.
         There is nothing else in between.
       </p>
-    </div>
-    <div class="clearfix"></div>
-    <div class="columns medium-6 small-12">
-      <h2><i class="strk-icon strk-icon-mint icon-plane"></i></h2>
+    </li>
+    <li>
+      <h2 class="strk-feature-icon"><i class="strk-icon strk-icon-mint icon-plane"></i></h2>
       <h3>Offline</h3>
       <p>
         You don't have to be connected to the Internet to update your streaks.
         Everything is kept locally, just in case.
       </p>
-    </div>
-    <div class="columns medium-6 small-12">
-      <h2><i class="strk-icon strk-icon-violet icon-chemistry"></i></h2>
+    </li>
+    <li>
+      <h2 class="strk-feature-icon"><i class="strk-icon strk-icon-violet icon-chemistry"></i></h2>
       <h3>Hackable</h3>
       <p>
         strk.io provides a simple <a href="https://github.com/strkio/strkio-api-server">REST API</a> that can be used to integrate with other services
         (see <a href="https://github.com/strkio/hubot-strkio">Hubot package</a> for an example).
       </p>
-    </div>
-    <div class="clearfix"></div>
-    <div class="columns medium-6 small-12">
-      <h2><i class="strk-icon strk-icon-red icon-heart"></i></h2>
+    </li>
+    <li>
+      <h2 class="strk-feature-icon"><i class="strk-icon strk-icon-red icon-heart"></i></h2>
       <h3>Open Source</h3>
       <p>
         strk.io is fully open source from the day one.
         Released under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT License</a>.
         Available at <a href="https://github.com/strkio">GitHub</a>.
       </p>
-    </div>
-  </div>
+    </li>
+  </ul>
 </div>
 <footer class="sticky-footer">
   <a href="https://github.com/strkio/strkio-api-server">API</a> |
