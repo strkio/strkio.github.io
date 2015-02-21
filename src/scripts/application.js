@@ -64,6 +64,8 @@ module.exports = Vue.extend({
         if ($data.owner) {
           session.set('lastOpenStreak', 'gist:' + data.id);
         }
+        // there is no need to call commitChanges on page load
+        // due to the presence of "lightbolt" indicator
         cb(null, data);
       }.bind(this));
     } else {
@@ -74,10 +76,9 @@ module.exports = Vue.extend({
   },
   methods: {
     commitChanges: function () {
-      // todo: sort out race conditions
-      var $data = this.$data;
       var gist = this.gist;
       if (gist) {
+        var $data = this.$data;
         gist.save(this.set, function (err) {
           if (err) {
             console.error(err);
