@@ -33,14 +33,17 @@ var webpackConfigTemplate = {
   resolve: {
     modulesDirectories: ['bower_components', 'node_modules'],
     alias: {
-      superagent: 'superagent/superagent.js'
+      superagent: 'superagent/superagent.js',
+      grapnel: 'grapnel/src/grapnel.js'
     }
   },
   externals: {
     jsonify: 'JSON'
   },
   module: {
-    noParse: [/(d3|moment|pikaday|query-string|superagent|vue|fastclick)/],
+    noParse: [
+      /(d3|moment|pikaday|query-string|superagent|vue|fastclick|grapnel)/
+    ],
     loaders: [
       {
         test: /\.html/,
