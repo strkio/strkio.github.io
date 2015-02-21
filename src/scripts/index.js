@@ -8,6 +8,7 @@ var router = require('./router');
 
 Vue.config.silent = !__DEV__;
 Vue.config.warnExpressionErrors = !!__DEV__;
+Vue.config.async = false; /* fixme */
 
 var qs = queryString.parse(window.location.search);
 var oauthToken = session.get('oauthToken');
