@@ -35,7 +35,7 @@
 }
 
 .cg .day:hover, .cg .day.active {
-  stroke: #222;
+  stroke: var(--base02);
 }
 
 .cg .day.disabled {
