@@ -1,7 +1,7 @@
 <header class="fixed-header">
   <div class="row">
     <div class="small-3 column">
-      <a href="/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
+      <a href="#/"><h2 class="logo medium">strk.io<sup>alpha</sup></h2></a>
     </div>
     <div class="small-9 column">
       <ul class="toolbar inline-list" style="float: right" v-if="loaded">
@@ -25,7 +25,8 @@
           </span>
         </li>
         <li v-if="((signedIn && owner) || draft) && !err">
-          <a class="z-icon hint--left hint--rounded hint--no-animate"
+          <a id="streak-add-btn"
+             class="z-icon hint--left hint--rounded hint--no-animate"
              data-hint="Add new streak"
              style="font-size: 1.1rem;"
              v-on="click: addNewStreak">

@@ -1,5 +1,6 @@
 <!-- todo: refactor dnd -->
-<div v-repeat="streak: streaks"
+<div class="strk-streak"
+     v-repeat="streak: streaks"
      v-on="dragenter:dragenter, dragover:dragover, dragend:dragend, drop:drop">
   <div class="row" style="margin-top: 18px; margin-bottom: 12px; ">
     <div class="small-8 column"
@@ -10,7 +11,7 @@
           v-if="!readOnly" draggable="true" v-on="dragstart:dragstart">
           <i class="icon-list"></i>
         </span>
-        <span style="font-size: 1.4375rem">
+        <span class="strk-streak-name" style="font-size: 1.4375rem">
           {{ streak.name }}
         </span>
     </div>
