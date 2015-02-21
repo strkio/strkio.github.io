@@ -1,4 +1,5 @@
 {
+  "mocha": true,
   "browser": true,
   "node": true,
   "bitwise": false,
