@@ -151,7 +151,7 @@ CalendarGraph.prototype.calculateTrail = function (el, endDate) {
       trail++;
     }
   }
-  return trail;
+  return Math.min(trail, 12);
 };
 
 function debounce(fn, timeout) {
