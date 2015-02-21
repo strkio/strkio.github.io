@@ -1,4 +1,4 @@
-# strkio.github.io
+# strkio.github.io [![Build Status](https://travis-ci.org/strkio/strkio.github.io.svg?branch=develop)](https://travis-ci.org/strkio/strkio.github.io)
 
 [strk.io](http://strk.io/).
 
