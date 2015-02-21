@@ -169,6 +169,10 @@ select.z-input:hover {
   vertical-align: middle;
 }
 
+.row {
+  max-width: 74em;
+}
+
 button.small, .button.small {
   padding-top: 0.875rem;
   padding-right: 1.45rem;
