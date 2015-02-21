@@ -205,6 +205,8 @@ button.small, .button.small {
 
 .strk-feature-block {
   padding: 18px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .strk-feature-block li {
