@@ -13,6 +13,15 @@ function mount(vue) {
 }
 
 function mountApp(data) {
+  var storageModified = false;
+  window.addEventListener('storage', function () {
+    storageModified = true;
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible' && storageModified) {
+      location.reload();
+    }
+  });
   mount(new App({
     data: Vue.util.extend(data, {
       signedIn: !!session.get('oauthToken')
