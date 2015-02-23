@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 var webdriverioConfig = {
   desiredCapabilities: JSON.parse(process.env.WEBDRIVER_DESIRED_CAPABILITIES),
-  waitforTimeout: 1000
+  waitforTimeout: 60 * 1000
 };
 if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
   _.extend(webdriverioConfig, {
