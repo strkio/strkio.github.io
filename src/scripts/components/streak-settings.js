@@ -53,7 +53,7 @@ module.exports = Vue.extend({
   methods: {
     validateName: function () {
       var msg;
-      var name = this.$data.name;
+      var name = (this.$data.name || '').trim();
       if (!name) {
         msg = 'Name is required.';
       } else if (name.indexOf('/') !== -1) {
