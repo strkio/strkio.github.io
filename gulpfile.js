@@ -339,7 +339,8 @@ gulp.task('test:e2e', function (cb) {
     if (browser === 'saucelabs') {
       desiredCapabilities = require('./test/sauce-browsers.json');
     } else {
-      desiredCapabilities = browser.split(',').map(function (browserName) {
+      Array.isArray(browser) || (browser = [browser]);
+      desiredCapabilities = browser.map(function (browserName) {
         return {browserName: browserName};
       });
     }
