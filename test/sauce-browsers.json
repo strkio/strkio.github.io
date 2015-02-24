@@ -25,11 +25,6 @@
     "platform": "Windows 7"
   },
   {
-    "browserName": "internet explorer",
-    "version": "9.0",
-    "platform": "Windows 7"
-  },
-  {
     "browserName": "iphone",
     "version": "7.1",
     "platform": "OS X 10.10",
