@@ -110,7 +110,7 @@ gulp.task('build:favicon', function () {
 });
 
 gulp.task('build:fonts', function () {
-  return gulp.src('src/fonts/*.ttf', {base: 'src'})
+  return gulp.src('src/fonts/*.woff', {base: 'src'})
     .pipe(gulp.dest('build'));
 });
 
