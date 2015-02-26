@@ -10,7 +10,9 @@ var webpack = require('webpack');
 var portScanner = require('portscanner');
 var sauceConnectLauncher = require('sauce-connect-launcher');
 var seleniumStandalone = require('selenium-standalone');
-var _ = require('lodash');
+var once = require('lodash.once');
+var clone = require('lodash.clone');
+var without = require('lodash.without');
 var async = require('async');
 var StreamSlicer = require('stream-slicer');
 var connect = require('connect');
@@ -24,8 +26,8 @@ var bowerDependencies = Object.keys(require('./bower.json').dependencies);
 var webpackConfigTemplate = {
   entry: {
     index: './src/scripts/index.js',
-    thirdparty:
-      _.without(bowerDependencies, 'foundation', 'hint.css', 'normalize.css')
+    thirdparty: ['lodash.once'].concat(without(bowerDependencies,
+      'foundation', 'hint.css', 'normalize.css'))
   },
   resolve: {
     modulesDirectories: ['bower_components', 'node_modules'],
@@ -39,7 +41,7 @@ var webpackConfigTemplate = {
   },
   module: {
     noParse: [
-      new RegExp('(' + _.without(bowerDependencies,
+      new RegExp('(' + without(bowerDependencies,
         'strkio-storage-githubgist'
       ).join('|') + ')')
     ],
@@ -278,7 +280,7 @@ gulp.task('launch:sauce-connect', function (cb) {
 });
 
 gulp.task('launch:selenium', function (cb) {
-  cb = _.once(cb);
+  cb = once(cb);
   var options = gutil.env;
   var port = 4444;
   var launchTimeoutInMs = 5000;
@@ -369,7 +371,7 @@ gulp.task('test:e2e', function (cb) {
         gutil.log('Starting E2E suite (over ' + desiredCapabilities.length +
         ' browser(s))');
         async.mapLimit(desiredCapabilities, concurrency, function (c, cb) {
-          var env = _.clone(process.env);
+          var env = clone(process.env);
           if (browser !== 'saucelabs') {
             delete env.SAUCE_USERNAME;
             delete env.SAUCE_ACCESS_KEY;

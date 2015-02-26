@@ -1,11 +1,13 @@
-var _ = require('lodash');
+var assign = require('lodash.assign');
+
+// https://code.google.com/p/selenium/wiki/DesiredCapabilities
 
 var webdriverioConfig = {
   desiredCapabilities: JSON.parse(process.env.WEBDRIVER_DESIRED_CAPABILITIES),
   waitforTimeout: 60 * 1000
 };
 if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
-  _.extend(webdriverioConfig, {
+  assign(webdriverioConfig, {
     host: 'ondemand.saucelabs.com',
     port: 80,
     user: process.env.SAUCE_USERNAME,
