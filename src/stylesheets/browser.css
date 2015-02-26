@@ -1,0 +1,48 @@
+.fixed-notification {
+  z-index: 999;
+  position: fixed;
+  width: auto;
+  min-width: 100%;
+  padding: 12px 6px 12px;
+  font-size: 0.875em;
+  color: #fff;
+  text-align: center;
+  min-height: 67px;
+}
+
+.fixed-notification.fatal {
+  background-color: var(--base08);
+}
+
+.fixed-notification.warning {
+  background-color: var(--base09);
+}
+
+.fixed-notification a,
+.fixed-notification a:hover,
+.fixed-notification a:active {
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cors #browser-check,
+.localstorage #browser-check {
+  display: none;
+}
+
+.no-cors #browser-check,
+.no-localstorage #browser-check {
+  display: block;
+}
+
+.cors #browser-check .cors,
+.localstorage #browser-check .localstorage {
+  display: none;
+}
+
+.no-js #browser-check,
+.no-js #application {
+  display: none;
+}
+
