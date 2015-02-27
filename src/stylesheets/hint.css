@@ -7,11 +7,20 @@
   box-shadow: 2px 2px 2px rgba(48, 48, 48, 0.2);
 }
 
-.hint--top:before,
-.hint--bottom:before,
-.hint--left:before,
-.hint--right:before {
+.hint--top:before {
+  border-top-color: var(--base02);
+}
+
+.hint--bottom:before {
+  border-bottom-color: var(--base02);
+}
+
+.hint--left:before {
   border-left-color: var(--base02);
+}
+
+.hint--right:before {
+  border-right-color: var(--base02);
 }
 
 .hint--rounded:after {
