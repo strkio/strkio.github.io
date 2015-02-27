@@ -2,20 +2,16 @@ var Vue = require('vue');
 
 module.exports = Vue.extend({
   template: require('../../templates/components/streak-set.html'),
-  mixins: [
-    require('../mixins/drag-and-drop')
-  ],
   components: {
-    'streak-settings': require('./streak-settings'),
-    'streak-delete-confirmation': {
-      template: require(
-        '../../templates/components/streak-delete-confirmation.html')
-    },
-    'streak': require('./streak')
+    'streak-set-item': require('./streak-set-item')
   },
   events: {
     'new-streak-requested': function () {
-      this.add();
+      this.addNewStreak();
+      return false;
+    },
+    'remove-streak': function (streak) {
+      this.removeStreak(streak);
       return false;
     }
   },
@@ -24,37 +20,8 @@ module.exports = Vue.extend({
       streaks: []
     };
   },
-  computed: {
-    readOnly: function () {
-      return !this.$root.$data.owner;
-    }
-  },
   methods: {
-    edit: function (streak, e) {
-      e.targetVM.$data.$add('activeView');
-      if (e.targetVM.$data.activeView === 'streak-settings') {
-        this.restoreDefaultView(e);
-      } else {
-        e.targetVM.$data.activeView = 'streak-settings';
-      }
-    },
-    askForDeleteConfirmation: function (streak, e) {
-      e.targetVM.$data.$add('activeView');
-      if (e.targetVM.$data.activeView === 'streak-delete-confirmation') {
-        this.restoreDefaultView(e);
-      } else {
-        e.targetVM.$data.activeView = 'streak-delete-confirmation';
-      }
-    },
-    restoreDefaultView: function (e) {
-      if (!e.targetVM.$data.streak.name) {
-        this.streaks.$remove(e.targetVM.$data.streak);
-      } else {
-        e.targetVM.$data.$add('activeView');
-        e.targetVM.$data.activeView = 'streak';
-      }
-    },
-    add: function () {
+    addNewStreak: function () {
       var pendingStreakIndex = this.streaks.findIndex(function (streak) {
         return !streak.name;
       });
@@ -68,7 +35,23 @@ module.exports = Vue.extend({
         this._children[pendingStreakIndex].$el.scrollIntoView(false);
       }, this);
     },
-    remove: function (streak) {
+    moveUp: function (streak) {
+      this.moveStreak(streak, -1);
+    },
+    moveDown: function (streak) {
+      this.moveStreak(streak, +1);
+    },
+    moveStreak: function (streak, offset) {
+      var sourceIndex = this.$data.streaks.indexOf(streak);
+      var insertIndex = sourceIndex + offset;
+      var streaks = this.$data.streaks;
+      if (insertIndex < 0 || insertIndex >= streaks.length) {
+        return;
+      }
+      var removed = streaks.splice(sourceIndex, 1);
+      streaks.splice(insertIndex, 0, removed[0]);
+    },
+    removeStreak: function (streak) {
       this.streaks.$remove(streak);
     }
   }

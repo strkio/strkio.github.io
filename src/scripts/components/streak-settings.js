@@ -4,18 +4,9 @@ var moment = require('moment');
 
 module.exports = Vue.extend({
   template: require('../../templates/components/streak-settings.html'),
-  data: function () {
-    return {
-      name: null,
-      startDate: null,
-      excludedDays: [],
-      range: [],
-      inverted: false
-    };
-  },
   ready: function () {
     var data = this.$data;
-    data.$add('existing', data.existing);
+    data.$add('update', !!data.streak.name);
     ['name', 'startDate', 'days', 'range'].forEach(function (field) {
       data.$add(field + 'ValidationResult');
     });
@@ -38,6 +29,7 @@ module.exports = Vue.extend({
       maxDate: new Date(),
       onSelect: updateStartDate
     });
+    // fixme: 'next-with-tab' isn't working
     this.$$.datepicker.addEventListener('keydown', function (e) {
       if (e.keyCode === 46 || e.keyCode === 8) {
         pikaday.setDate(null);
@@ -60,8 +52,8 @@ module.exports = Vue.extend({
         msg = 'Name cannot contain \'/\' character.';
       } else if (
         this.$data.streak.name !== name &&
-          // @fixme: no need to say how bad this is
-        this.$parent.$parent.$data.streaks.some(
+          // todo: eliminate dependency on root vm
+        this.$root.$data.set.streaks.some(
           function (streak) {return streak.name === name;})) {
         msg = 'Name is already taken.';
       }
