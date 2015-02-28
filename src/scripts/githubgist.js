@@ -1,8 +1,8 @@
 var session = require('./session');
 var GitHubGist = require('strkio-storage-githubgist');
-var throttleAsync = require('./utils/throttle-async');
+var throttleAsync = require('./throttle-async');
 
-function SessionBackedGitHubGist() {
+function Gist() {
   var args = Array.prototype.slice.call(arguments);
   this.gist = new (Function.prototype.bind.apply(GitHubGist,
     [null].concat(args)))();
@@ -30,7 +30,7 @@ function SessionBackedGitHubGist() {
   }.bind(this), 1000);
 }
 
-SessionBackedGitHubGist.prototype.fetch = function (o, callback) {
+Gist.prototype.fetch = function (o, callback) {
   if (typeof o === 'function') {
     callback = o;
     o = {};
@@ -61,7 +61,7 @@ SessionBackedGitHubGist.prototype.fetch = function (o, callback) {
   });
 };
 
-SessionBackedGitHubGist.prototype.save = function (data, callback) {
+Gist.prototype.save = function (data, callback) {
   var gistId = this.gist.data.id;
   if (gistId) {
     // update existing gist (local right away, remote in a throttled way)
@@ -96,9 +96,9 @@ SessionBackedGitHubGist.prototype.save = function (data, callback) {
   }
 };
 
-SessionBackedGitHubGist.prototype.updatePending = function () {
+Gist.prototype.updatePending = function () {
   var gistId = this.gist.data.id;
   return gistId ? !!session.get('gist-' + gistId + '-updated') : false;
 };
 
-module.exports = SessionBackedGitHubGist;
+module.exports = Gist;

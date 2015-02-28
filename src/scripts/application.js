@@ -3,7 +3,7 @@ var HttpStatus = require('http-status');
 
 var config = require('./conf');
 var session = require('./session');
-var GitHubGist = require('./session-backed-githubgist');
+var GitHubGist = require('./githubgist');
 
 function synchronize(gist, cb) {
   gist.save(function (err) {

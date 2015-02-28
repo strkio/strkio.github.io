@@ -1,19 +1,7 @@
 var d3 = require('d3');
 
-function CalendarGraphTooltip() {}
-
-function minmax(coloring) {
-  var b = [];
-  Object.keys(coloring).forEach(function (k) {
-    var v = coloring[k];
-    if (typeof v === 'number') {
-      b.push(v);
-    } else {
-      Array.prototype.push.apply(b, v);
-    }
-  });
-  b.sort(function (l, r) {return l - r;});
-  return [b[0], b[b.length - 1]];
+function CalendarGraphTooltip(options) {
+  this.options = options || {};
 }
 
 CalendarGraphTooltip.prototype.onAttach = function (cg) {
@@ -23,18 +11,11 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
   var daySelector = cg._daySelector;
   var data = cg._data;
 
-  var mm = minmax(cg.options.coloring);
-  var lowerBoundary = mm[0];
-  var upperBoundary = mm[1];
-
   var cellSize = cg.options.cellSize;
-  var type = upperBoundary - lowerBoundary ? 'numeric' : 'boolean';
+  var type = this.options.type;
 
   var updateValue = function (key, value) {
-    var v = parseInt(value, 10);
-    if (!v || (lowerBoundary <= v && v <= upperBoundary)) {
-      cg.updateValue(key, v);
-    }
+    cg.updateValue(key, parseInt(value, 10));
   };
 
   var tooltip = containerSelector
@@ -53,8 +34,6 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
     tooltip
       .html(tooltipFormat(d) + (type === 'numeric' ?
       '<input type="number" value="' + (data[d] || 0) + '" ' +
-      'min="' + lowerBoundary + '" ' +
-      'max="' + upperBoundary + '" ' +
       (cg.options.readOnly ? 'disabled ' : '') +
       '></input>' : ''));
     var tooltipEL = tooltip[0][0];
@@ -115,7 +94,7 @@ CalendarGraphTooltip.prototype.onAttach = function (cg) {
         keepInPlace = true;
         prevD = d;
       } else {
-        updateValue(d, data[d] ? 0 : upperBoundary);
+        updateValue(d, data[d] ? 0 : 1);
       }
     })
     .on('mouseover', function (d) {
