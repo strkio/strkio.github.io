@@ -41,6 +41,10 @@ module.exports = Vue.extend({
     if (data.startDate) {
       pikaday.setDate(moment(data.startDate).toDate());
     }
+    this._pikaday = pikaday;
+  },
+  beforeDestroy: function () {
+    this._pikaday && this._pikaday.destroy();
   },
   methods: {
     validateName: function () {
