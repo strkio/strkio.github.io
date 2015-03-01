@@ -25,12 +25,14 @@ module.exports = function (fn, wait) {
     var cb = args[args.length - 1];
     fn.apply(null, args.slice(0, args.length - 1).concat(function (err) {
       var invoke = invokeRightAfterCompletion;
-      pending = false;
       invokeRightAfterCompletion = false;
       if (invoke && !err) {
-        setTimeout(Function.prototype.bind.apply(wrapper, [null].concat(args)),
-          Math.max(wait - (Date.now() - timestamp), 0));
+        setTimeout(function () {
+          pending = false;
+          wrapper.apply(null, args);
+        }, Math.max(wait - (Date.now() - timestamp), 0));
       } else {
+        pending = false;
         cb.apply(null, Array.prototype.slice.call(arguments));
       }
     }));
