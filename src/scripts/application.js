@@ -42,6 +42,7 @@ module.exports = Vue.extend({
       $data.$add('draft', true);
     }
     $data.$add('owner', true);
+    $data.$add('saveInProgress', 0);
     $data.$add('syncInProgress', false);
     $data.$add('updatePending', false);
     $data.$add('loaded', false);
@@ -79,11 +80,15 @@ module.exports = Vue.extend({
       var gist = this.gist;
       if (gist) {
         var $data = this.$data;
+        $data.saveInProgress++;
         gist.save(this.set, function (err) {
           if (err) {
             console.error(err);
           }
           $data.updatePending = gist.updatePending();
+          setTimeout(function () {
+            $data.saveInProgress--;
+          }, 500);
         });
       } else {
         session.set('draft', JSON.stringify(this.set));

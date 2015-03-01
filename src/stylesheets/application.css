@@ -44,4 +44,17 @@
   font-size: 0.9rem;
 }
 
+@-webkit-keyframes fade-in-out {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in-out {
+  animation: fade-in-out 1s infinite alternate;
+}
+
 

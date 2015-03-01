@@ -5,7 +5,14 @@
     </div>
     <div class="small-9 column">
       <ul class="toolbar inline-list" style="float: right" v-if="loaded">
-        <li v-if="updatePending">
+        <li class="animated" v-if="saveInProgress" v-transition="fade">
+          <a class="hint--left hint--rounded hint--no-animate"
+             data-hint="Pushing changes to the the remote Gist..."
+             style="font-size: 1.2rem; cursor: default">
+            <i class="icon-cloud-upload fade-in-out"></i>
+          </a>
+        </li>
+        <li v-if="!saveInProgress && updatePending">
           <a class="hint--left hint--rounded hint--no-animate"
              data-hint="Some changes where not &#10;propagated. Click to retry."
              style="font-size: 1.1rem;"
