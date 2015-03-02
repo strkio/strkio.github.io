@@ -36,7 +36,9 @@ module.exports = Vue.extend({
         pikaday.hide();
         updateStartDate(null);
       }
-      e.preventDefault();
+      if (e.keyCode !== 9) {
+        e.preventDefault();
+      }
     });
     if (data.startDate) {
       pikaday.setDate(moment(data.startDate).toDate());

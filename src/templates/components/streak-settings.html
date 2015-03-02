@@ -9,7 +9,7 @@
             </label>
           </div>
           <div class="small-8 medium-7 large-6 columns">
-            <input class="z-input strk-streak-name-input" type="text" id="name-{{index}}" v-model="name" lazy>
+            <input class="z-input strk-streak-name-input" type="text" id="name-{{index}}" v-model="name" lazy tabindex="1">
             <small class="error"
               style="margin-top: -12px; background-color: rgba(191, 97, 106, 0.75);
               font-style: normal" v-show="!!nameValidationResult">
@@ -27,7 +27,7 @@
               right: 16px; top: 6px; pointer-events: none; color: gray">
               <i class="icon-calendar"></i>
             </span>
-            <input class="z-input" v-el="datepicker" type="text" id="datepicker-{{index}}">
+            <input class="z-input" v-el="datepicker" type="text" id="datepicker-{{index}}" tabindex="1">
             <small class="error"
                    style="margin-top: -12px; background-color: rgba(191, 97, 106, 0.75);
               font-style: normal" v-show="!!startDateValidationResult">
@@ -43,49 +43,49 @@
             <ul class="z-button-group button-group" style="width: 100%">
               <li style="width: 15%;">
                 <a class="small button" v-class="secondary: excludeDay0"
-                   v-on="click: toggleDayExclusion(0)">
+                   v-on="click: toggleDayExclusion(0), keyup: toggleDayExclusion(0) | key 32" tabindex="1">
                   <span class="hide-for-small">Sun</span>
                   <span class="show-for-small">S</span>
                 </a>
               </li>
               <li style="width: 14%;">
                 <a class="small button" v-class="secondary: excludeDay1"
-                   v-on="click: toggleDayExclusion(1)">
+                   v-on="click: toggleDayExclusion(1), keyup: toggleDayExclusion(1) | key 32" tabindex="1">
                   <span class="hide-for-small">Mon</span>
                   <span class="show-for-small">M</span>
                 </a>
               </li>
               <li style="width: 14%;">
                 <a class="small button" v-class="secondary: excludeDay2"
-                   v-on="click: toggleDayExclusion(2)">
+                   v-on="click: toggleDayExclusion(2), keyup: toggleDayExclusion(2) | key 32" tabindex="1">
                   <span class="hide-for-small">Tue</span>
                   <span class="show-for-small">T</span>
                 </a>
               </li>
               <li style="width: 14%;">
                 <a class="small button" v-class="secondary: excludeDay3"
-                   v-on="click: toggleDayExclusion(3)">
+                   v-on="click: toggleDayExclusion(3), keyup: toggleDayExclusion(3) | key 32" tabindex="1">
                   <span class="hide-for-small">Wed</span>
                   <span class="show-for-small">W</span>
                 </a>
               </li>
               <li style="width: 14%;">
                 <a class="small button" v-class="secondary: excludeDay4"
-                   v-on="click: toggleDayExclusion(4)">
+                   v-on="click: toggleDayExclusion(4), keyup: toggleDayExclusion(4) | key 32" tabindex="1">
                   <span class="hide-for-small">Thu</span>
                   <span class="show-for-small">T</span>
                 </a>
               </li>
               <li style="width: 14%;">
                 <a class="small button" v-class="secondary: excludeDay5"
-                   v-on="click: toggleDayExclusion(5)">
+                   v-on="click: toggleDayExclusion(5), keyup: toggleDayExclusion(5) | key 32" tabindex="1">
                   <span class="hide-for-small">Fri</span>
                   <span class="show-for-small">F</span>
                 </a>
               </li>
               <li style="width: 15%;">
                 <a class="small button" v-class="secondary: excludeDay6"
-                   v-on="click: toggleDayExclusion(6)">
+                   v-on="click: toggleDayExclusion(6), keyup: toggleDayExclusion(6) | key 32" tabindex="1">
                   <span class="hide-for-small">Sat</span>
                   <span class="show-for-small">S</span>
                 </a>
@@ -103,7 +103,7 @@
             <label class="right inline">Type</label>
           </div>
           <div class="small-8 medium-7 large-6 columns">
-            <select name="select" class="z-input" v-model="type">
+            <select name="select" class="z-input" v-model="type" tabindex="1">
               <option value="toggle">Toggle</option>
               <option value="number">Number</option>
             </select>
@@ -118,11 +118,11 @@
             <div class="row">
               <div class="small-6 columns">
                 <input class="z-input" type="number" placeholder="from"
-                       v-model="range[0]">
+                       v-model="range[0]" tabindex="1">
               </div>
               <div class="small-6 columns">
                 <input class="z-input" type="number" placeholder="to"
-                       v-model="range[1]">
+                       v-model="range[1]" tabindex="1">
               </div>
             </div>
             <small class="error"
@@ -138,7 +138,7 @@
           </div>
           <div class="small-8 medium-7 large-6 columns">
             <div class="checkbox" style="margin-top: 0">
-            <label><input type="checkbox" v-model="inverted">
+            <label><input type="checkbox" v-model="inverted" tabindex="1">
               Invert (break streak on entry)
             </label>
             </div>
@@ -149,11 +149,11 @@
   </form>
   <div class="row">
     <div class="large-12 column" style="text-align: center">
-      <a class="streak-apply-changes-btn button small success" v-on="click: applyChanges">
+      <a class="streak-apply-changes-btn button small success" v-on="click: applyChanges" tabindex="1">
         {{ update ? 'Apply changes' : 'Create streak' }}
       </a>
       <a class="streak-cancel-change-btn button small secondary"
-         v-on="click: $parent.restoreDefaultView({targetVM: $parent})">
+         v-on="click: $parent.restoreDefaultView({targetVM: $parent})" tabindex="1">
         Cancel
       </a>
     </div>
