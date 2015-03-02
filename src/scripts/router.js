@@ -44,11 +44,6 @@ function mountSignIn() {
 }
 
 module.exports = Grapnel.listen({
-  '/features': function () {
-    mount(new Vue({
-      template: require('../templates/features.html')
-    }));
-  },
   '/gists/:id': function (req) {
     mountApp({gistId: req.params.id});
   },
