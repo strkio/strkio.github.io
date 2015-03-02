@@ -58,3 +58,19 @@
   margin-top: 0;
   margin-bottom: 6px;
 }
+
+#social {
+  text-align: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 2em 0 0;
+}
+
+#social li {
+  display: inline-block;
+  margin: 0 3px;
+}
+
+#social li:first-child {
+  padding-left: 24px;
+}
