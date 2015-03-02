@@ -1,12 +1,31 @@
 # strkio.github.io [![Build Status](https://travis-ci.org/strkio/strkio.github.io.svg?branch=develop)](https://travis-ci.org/strkio/strkio.github.io) 
 
-[strk.io](http://strk.io/).
+[strk.io](http://strk.io/)
 
 - For latest updates and announcements, follow on Twitter: [@strkio](https://twitter.com/strkio).
 - Live discussion: [![Join the chat at https://gitter.im/strkio/strkio.github.io](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/strkio/strkio.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge).
 - Bugs, suggestions, feature requests: [GitHub Issues](https://github.com/strkio/strkio.github.io/issues).
 
-## Running locally
+## Features
+- Responsive 
+  
+  Designed mobile-first. Use it on your phone, tablet or desktop.
+
+- Transparent
+
+  Your data always stays with you (as a private Gist).
+  Whenever you make a change, your browser talks to the GitHub API directly.
+  There is nothing else in between.
+
+- Offline
+
+  You don't have to be connected to the Internet to update your streaks (or to keep strk.io tab open for that matter). Everything is kept locally, just in case. 
+  
+- Hackable
+
+  strk.io provides a simple <a href="https://github.com/strkio/strkio-api-server">HTTP API</a> for easier integration with external services/tools.
+
+## Development
 
 > PREREQUISITE: [Node.js](http://nodejs.org/) >= 0.10, NPM, [Bower](http://bower.io/) and [Gulp](http://gulpjs.com/). 
 
