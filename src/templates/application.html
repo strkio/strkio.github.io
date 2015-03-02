@@ -87,7 +87,12 @@
 <div class="row" v-if="!set.streaks.length">
   <div class="column small-12"
        style="text-align: center; margin-top: 18px; font-size: 0.8rem; color: #a7adba">
-    EMPTY
+    <span v-if="!owner">
+      Nothing to see here. This set is empty.
+    </span>
+    <span v-if="owner">
+      This set is empty. Click <i class="icon-plus"></i> to get started.
+    </span>
   </div>
 </div>
 <div style="overflow: hidden" v-if="set && !syncInProgress" v-component="streak-set" v-ref="streak-set" v-with="set" keep-alive></div>
