@@ -66,6 +66,7 @@ var webpackConfigTemplate = {
 };
 
 var optimize = false;
+var thirdpartyCSSBuilt = false;
 
 var src = {
   js: ['gulpfile.js', 'src/scripts/**/*.js'],
@@ -193,10 +194,12 @@ gulp.task('build:scripts', function (cb) {
 });
 
 gulp.task('build:stylesheets', function () {
-  return gulp.src([
-    'src/stylesheets/index.css',
-    'src/stylesheets/thirdparty.css' // todo: replace with concat
-  ], {base: 'src'})
+  var src = ['src/stylesheets/index.css'];
+  if (!thirdpartyCSSBuilt) {
+    src.push('src/stylesheets/thirdparty.css');
+    thirdpartyCSSBuilt = true;
+  }
+  return gulp.src(src, {base: 'src'})
     .pipe($.myth())
     .on('error', console.log)
     .pipe(optimize ? $.csso() : through.obj())
