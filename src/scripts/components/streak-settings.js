@@ -6,6 +6,7 @@ module.exports = Vue.extend({
   template: require('../../templates/components/streak-settings.html'),
   ready: function () {
     var data = this.$data;
+    data.streak || (data.streak = {data: {}});
     data.$add('update', !!data.streak.name);
     ['name', 'startDate', 'days', 'range'].forEach(function (field) {
       data.$add(field + 'ValidationResult');
@@ -44,6 +45,7 @@ module.exports = Vue.extend({
       pikaday.setDate(moment(data.startDate).toDate());
     }
     this._pikaday = pikaday;
+    this.$$.name.focus();
   },
   beforeDestroy: function () {
     this._pikaday && this._pikaday.destroy();
@@ -123,9 +125,10 @@ module.exports = Vue.extend({
         streak.$add(key);
         streak[key] = updatedSettings[key];
       });
-      this.$dispatch('set-updated');
-      // @fixme: dispatch event instead
-      this.$parent.restoreDefaultView({targetVM: this.$parent});
+      this.$dispatch('streak-settings-closed', streak);
+    },
+    cancel: function () {
+      this.$dispatch('streak-settings-closed');
     },
     toggleDayExclusion: function (index) {
       var key = 'excludeDay' + index;

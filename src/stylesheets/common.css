@@ -31,7 +31,7 @@ a {
 }
 
 a:hover, a:focus {
-  color: color(var(--base0d) tint(5%));
+  color: color(var(--base0d) shade(5%));
 }
 
 a:focus {

@@ -17,7 +17,13 @@ function synchronize(gist, cb) {
 module.exports = Vue.extend({
   template: require('../templates/application.html'),
   components: {
-    'streak-set': require('./components/streak-set')
+    'streak-set': require('./components/streak-set'),
+    'streak-draft': {
+      template: require('../templates/components/streak-draft.html'),
+      components: {
+        'streak-settings': require('./components/streak-settings')
+      }
+    }
   },
   filters: {
     encode: require('./filters/encode-uri-component')
@@ -25,6 +31,13 @@ module.exports = Vue.extend({
   events: {
     'set-updated': function () {
       this.commitChanges();
+      return false;
+    },
+    'streak-settings-closed': function (streak) {
+      this.$data.activateNewStreakVM = false;
+      if (streak) {
+        this.$data.set.streaks.push(streak);
+      }
       return false;
     }
   },
@@ -41,6 +54,7 @@ module.exports = Vue.extend({
     } else {
       $data.$add('draft', true);
     }
+    $data.$add('activateNewStreakVM', false);
     $data.$add('owner', true);
     $data.$add('saveInProgress', 0);
     $data.$add('syncInProgress', false);
@@ -121,9 +135,10 @@ module.exports = Vue.extend({
       if ($data.syncInProgress) {
         return;
       }
-      this.$broadcast('new-streak-requested');
-      // directives/ref gets torn away on element removal
-      // this.$['streak-set'].add();
+      this.$data.activateNewStreakVM = true;
+      Vue.nextTick(function () {
+        this.$['new-streak'].$el.scrollIntoView(false);
+      }, this);
     },
     saveAsGist: function () {
       var $data = this.$data;

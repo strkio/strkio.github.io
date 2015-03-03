@@ -10,6 +10,15 @@ module.exports = Vue.extend({
     },
     'streak': require('./streak')
   },
+  events: {
+    'streak-settings-closed': function (streak) {
+      if (streak) {
+        this.$dispatch('set-updated');
+      }
+      this.restoreDefaultView();
+      return false;
+    }
+  },
   computed: {
     readOnly: function () {
       // todo: eliminate dependency on root vm

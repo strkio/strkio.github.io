@@ -9,7 +9,10 @@
             </label>
           </div>
           <div class="small-8 medium-7 large-6 columns">
-            <input class="z-input strk-streak-name-input" type="text" id="name-{{index}}" v-model="name" lazy tabindex="0">
+            <input id="name-{{index}}"
+              class="z-input strk-streak-name-input" type="text"
+              v-model="name" v-on="keyup: applyChanges | key enter" v-el="name"
+              lazy tabindex="0">
             <small class="error"
               style="margin-top: -12px; background-color: rgba(191, 97, 106, 0.75);
               font-style: normal" v-show="!!nameValidationResult">
@@ -153,7 +156,7 @@
         {{ update ? 'Apply changes' : 'Create streak' }}
       </a>
       <a class="streak-cancel-change-btn button small secondary"
-         v-on="click: $parent.restoreDefaultView({targetVM: $parent})" tabindex="0">
+         v-on="click: cancel" tabindex="0">
         Cancel
       </a>
     </div>
