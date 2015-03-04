@@ -1,5 +1,6 @@
 var Vue = require('vue');
 var HttpStatus = require('http-status');
+var moment = require('moment');
 
 var config = require('./conf');
 var session = require('./session');
@@ -12,6 +13,22 @@ function synchronize(gist, cb) {
     }
     gist.fetch({force: true}, cb);
   });
+}
+
+function fn(v) {
+  return typeof v === 'function' ? v : function () { return v; };
+}
+
+function generateData(threshold, value) {
+  threshold = fn(threshold);
+  value = fn(value);
+  var data = {};
+  for (var i = 0, d = moment(); i < 355; i++, d.subtract(1, 'day')) {
+    if (Math.random() > threshold(d)) {
+      data[d.format('YYYY-MM-DD')] = value(d);
+    }
+  }
+  return data;
 }
 
 module.exports = Vue.extend({
@@ -90,6 +107,41 @@ module.exports = Vue.extend({
     }
   },
   methods: {
+    generateSample: function () {
+      var streak1 = {
+        name: 'Solve one puzzle a day',
+        data: generateData(function (d) {
+          var weekday = d.isoWeekday() % 7;
+          return weekday === 0 || weekday === 6 ? 0.8 : 0.33;
+        }, 1)
+      };
+      var streak2 = {
+        name: 'Workout (on weekdays, at least 45m)',
+        excludedDays: [0, 6],
+        range: [45, 120],
+        data: generateData(0.5, function () {
+          return 45 + ~~(Math.random() * 9) * 5;
+        })
+      };
+      for (var i = 0; i < 30; i++) {
+        streak2.data[moment().subtract(Math.random() * 355, 'days')
+          .format('YYYY-MM-DD')] = 30;
+      }
+      var streak3 = {
+        name: 'No junk food',
+        startDate: moment().subtract(13, 'months').format('YYYY-MM-DD'),
+        inverted: true,
+        data: generateData(function (d) {
+          var weekday = d.isoWeekday() % 7;
+          return weekday === 0 || weekday === 6 ? 0.9 : 0.66;
+        }, 1)
+      };
+      this.$data.set.streaks = [];
+      var streaks = this.$data.set.streaks;
+      streaks.push(streak1);
+      streaks.push(streak2);
+      streaks.push(streak3);
+    },
     commitChanges: function () {
       var gist = this.gist;
       if (gist) {
