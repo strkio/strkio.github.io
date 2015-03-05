@@ -42,22 +42,28 @@ $ gulp serve
   [look here](https://github.com/eugene1g/phantomjs/releases)). 
 
 ```sh
-$ # run tests on phantomjs
+$ # run unit tests
+$ gulp test:unit
+
+$ # run specific unit test(s)
+$ gulp test:unit --grep '<substring>'
+
+$ # run e2e tests on phantomjs
 $ gulp test:e2e
  
-$ # run tests on chrome/firefox/... 
+$ # run e2e tests on chrome/firefox/... 
 $ gulp test:e2e --browser=<name_1> --browser=<name_2>
 
-$ # run tests on Sauce Labs
+$ # run e2e tests on Sauce Labs
 $ SAUCE_USERNAME=<username> SAUCE_ACCESS_KEY=<password> gulp test:e2e --browser=saucelabs
 
-$ # run with a specific concurrency level (default is 2)
+$ # run e2e tests sequentially or in parallel (default is 2)
 $ gulp test:e2e --concurrency=1
 
-$ # run specific test(s) 
+$ # run specific e2e test(s) 
 $ gulp test:e2e --mochaArg=-g --mochaArg="<name>"
  
-$ # test <subdomain>.ngrok.com instead of localhost:8000 
+$ # test <subdomain>.ngrok.com instead of localhost:8000 (e2e) 
 $ gulp test:e2e --target=<subdomain>.ngrok.com  
 ```
 
