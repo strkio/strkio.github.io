@@ -6,6 +6,7 @@ var CalendarGraphTooltip = require('../calendar-graph/calendar-graph-tooltip');
 
 module.exports = Vue.extend({
   ready: function () {
+    // todo: update endDate after 11.59PM
     var vm = this;
     var data = this.$data.data;
     var startDateTime = this.$data.startDate ?

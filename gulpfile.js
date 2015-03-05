@@ -417,4 +417,11 @@ gulp.task('test:e2e', function (cb) {
   });
 });
 
+gulp.task('test:unit', function () {
+  var options = gutil.env;
+  var grep = options.g || options.grep;
+  return gulp.src('test/unit/**/*.spec.js', {read: false})
+    .pipe($.mocha({grep: grep}));
+});
+
 gulp.task('test', ['test:e2e']);
