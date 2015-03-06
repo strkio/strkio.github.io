@@ -108,11 +108,16 @@ module.exports = Vue.extend({
       if (!valid) {
         return;
       }
+      var range = this.$data.range.slice();
+      if (range.length) {
+        range[0] = parseInt(range[0], 10);
+        range[1] = parseInt(range[1], 10);
+      }
       var updatedSettings = {
         name: this.$data.name,
         startDate: this.$data.startDate || null,
         excludedDays: [],
-        range: this.$data.range,
+        range: range,
         inverted: this.$data.inverted
       };
       for (var i = 0; i < 7; i++) {
