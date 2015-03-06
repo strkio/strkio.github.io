@@ -50,7 +50,9 @@ var webpackConfigTemplate = {
         test: /\.html/,
         loader: 'html',
         query: {
-          removeRedundantAttributes: false // because of foundation
+          removeRedundantAttributes: false, // because of foundation,
+          collapseWhitespace: true,
+          conservativeCollapse: true
         }
       }
     ]
