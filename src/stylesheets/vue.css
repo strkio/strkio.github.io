@@ -3,13 +3,21 @@
 }
 
 .animated.fade-enter {
+  opacity: 0;
+}
+
+.animated.fade-leave {
+  opacity: 0;
+}
+
+.animated.block-fade-enter {
   overflow: hidden;
   padding: 0;
   margin: 0;
   opacity: 0;
 }
 
-.animated.fade-leave {
+.animated.block-fade-leave {
   overflow: hidden;
   height: 0;
   padding: 0;

@@ -30,8 +30,12 @@ a {
   color: var(--base03);
 }
 
-a:hover {
-  color: color(var(--base0d) shade(20%));
+a:hover, a:focus {
+  color: color(var(--base0d) shade(5%));
+}
+
+a:focus {
+  outline: none;
 }
 
 hr {

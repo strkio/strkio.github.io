@@ -1,0 +1,44 @@
+<div class="row" style="margin-top: 18px; margin-bottom: 12px; ">
+  <div class="small-8 column"
+       style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <a class="z-icon hint--right hint--rounded hint--no-animate"
+           data-hint="Move up"
+           style="font-size: 1.1rem; margin-right: 12px"
+           v-on="click: $parent.moveUp(streak)"
+           v-if="!readOnly">
+          <i class="icon-arrow-up"></i>
+        </a>
+        <a class="z-icon hint--right hint--rounded hint--no-animate"
+           data-hint="Move down"
+           style="font-size: 1.1rem; margin-right: 12px"
+           v-on="click: $parent.moveDown(streak)"
+           v-if="!readOnly">
+          <i class="icon-arrow-down"></i>
+        </a>
+        <span class="strk-streak-name" style="font-size: 1.4375rem">
+          {{ streak.name }}
+        </span>
+  </div>
+  <div class="small-4 column" style="text-align: right;" v-if="!readOnly">
+    <span style="font-size: 1.4375rem"></span>
+    <a class="z-icon hint--left hint--rounded hint--no-animate"
+       data-hint="Edit"
+       style="font-size: 1.1rem; "
+       v-on="click: edit(streak, $event)"
+       v-show="!!streak.name">
+      <i class="icon-settings"></i>
+    </a>
+    <a class="z-icon hint--left hint--rounded hint--no-animate"
+       data-hint="Delete"
+       style="font-size: 1.1rem; margin-left: 18px"
+       v-on="click: askForDeleteConfirmation(streak, $event)">
+      <i class="icon-close"></i>
+    </a>
+  </div>
+</div>
+<div class="animated"
+     v-if="activeView"
+     v-transition="block-fade"
+     v-component="{{activeView}}"
+     v-with="index: index, streak: streak"></div>
+<br/>

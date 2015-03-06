@@ -5,7 +5,14 @@
     </div>
     <div class="small-9 column">
       <ul class="toolbar inline-list" style="float: right" v-if="loaded">
-        <li v-if="updatePending">
+        <li class="animated" v-if="saveInProgress" v-transition="fade">
+          <a class="hint--left hint--rounded hint--no-animate"
+             data-hint="Pushing changes to the the remote Gist..."
+             style="font-size: 1.2rem; cursor: default">
+            <i class="icon-cloud-upload fade-in-out"></i>
+          </a>
+        </li>
+        <li v-if="!saveInProgress && updatePending">
           <a class="hint--left hint--rounded hint--no-animate"
              data-hint="Some changes where not &#10;propagated. Click to retry."
              style="font-size: 1.1rem;"
@@ -77,13 +84,26 @@
   </div>
   </div>
 </div>
-<div class="row" v-if="!set.streaks.length">
+<div class="row animated" v-if="!set.streaks.length && !activateNewStreakVM" v-transition="block-fade">
   <div class="column small-12"
        style="text-align: center; margin-top: 18px; font-size: 0.8rem; color: #a7adba">
-    EMPTY
+    <div v-if="!owner">
+      Nothing to see here. This set is empty.
+    </div>
+    <div v-if="owner">
+      This set is empty. Click <i class="icon-plus"></i> to get started.
+      <p style="font-size: 0.9rem; margin-top: 12px">
+        <a v-on="click: generateSample">DEMO</a>
+      </p>
+    </div>
   </div>
 </div>
 <div style="overflow: hidden" v-if="set && !syncInProgress" v-component="streak-set" v-ref="streak-set" v-with="set" keep-alive></div>
+<div class="animated"
+  v-if="activateNewStreakVM"
+  v-transition="block-fade"
+  v-component="streak-draft"
+  v-ref="new-streak"></div>
 <div v-if="err">
   <div class="row" style="text-align: center;">
     <div class="column small-12">
@@ -95,7 +115,6 @@
 </div>
 <footer class="sticky-footer">
   <a href="https://github.com/strkio/strkio-api-server">API</a> |
-  <a href="https://github.com/strkio/hubot-strkio">Hubot package</a> |
-  <a href="https://github.com/strkio/strkio.github.io">GitHub Page</a> |
+  <a href="https://github.com/strkio/strkio.github.io">GitHub page</a> |
   with <i class="icon-heart"></i> from <a href="https://github.com/shyiko">@shyiko</a>
 </footer>

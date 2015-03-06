@@ -2,7 +2,7 @@
   font-family: "Simple-Line-Icons";
   font-style: normal;
   font-weight: normal;
-  src: url(../fonts/simple-line-icons.ttf) format("truetype");
+  src: url('../fonts/simple-line-icons.woff') format('woff');
 }
 
 .icon-user-female,
@@ -661,6 +661,16 @@
 .icon-arrow-right:before {
   content: "\e079";
 }
+
+/*
+.icon-arrow-right {
+  content: "\e079";
+}
+
+.icon-arrow-right {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe079;&nbsp;');
+}
+*/
 
 .icon-arrow-left:before {
   content: "\e07a";

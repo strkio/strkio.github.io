@@ -4,18 +4,10 @@ var moment = require('moment');
 
 module.exports = Vue.extend({
   template: require('../../templates/components/streak-settings.html'),
-  data: function () {
-    return {
-      name: null,
-      startDate: null,
-      excludedDays: [],
-      range: [],
-      inverted: false
-    };
-  },
   ready: function () {
     var data = this.$data;
-    data.$add('existing', data.existing);
+    data.streak || (data.streak = {data: {}});
+    data.$add('update', !!data.streak.name);
     ['name', 'startDate', 'days', 'range'].forEach(function (field) {
       data.$add(field + 'ValidationResult');
     });
@@ -38,30 +30,38 @@ module.exports = Vue.extend({
       maxDate: new Date(),
       onSelect: updateStartDate
     });
+    // fixme: 'next-with-tab' isn't working
     this.$$.datepicker.addEventListener('keydown', function (e) {
       if (e.keyCode === 46 || e.keyCode === 8) {
         pikaday.setDate(null);
         pikaday.hide();
         updateStartDate(null);
       }
-      e.preventDefault();
+      if (e.keyCode !== 9) {
+        e.preventDefault();
+      }
     });
     if (data.startDate) {
       pikaday.setDate(moment(data.startDate).toDate());
     }
+    this._pikaday = pikaday;
+    this.$$.name.focus();
+  },
+  beforeDestroy: function () {
+    this._pikaday && this._pikaday.destroy();
   },
   methods: {
     validateName: function () {
       var msg;
-      var name = this.$data.name;
+      var name = (this.$data.name || '').trim();
       if (!name) {
         msg = 'Name is required.';
       } else if (name.indexOf('/') !== -1) {
         msg = 'Name cannot contain \'/\' character.';
       } else if (
         this.$data.streak.name !== name &&
-          // @fixme: no need to say how bad this is
-        this.$parent.$parent.$data.streaks.some(
+          // todo: eliminate dependency on root vm
+        this.$root.$data.set.streaks.some(
           function (streak) {return streak.name === name;})) {
         msg = 'Name is already taken.';
       }
@@ -125,9 +125,10 @@ module.exports = Vue.extend({
         streak.$add(key);
         streak[key] = updatedSettings[key];
       });
-      this.$dispatch('set-updated');
-      // @fixme: dispatch event instead
-      this.$parent.restoreDefaultView({targetVM: this.$parent});
+      this.$dispatch('streak-settings-closed', streak);
+    },
+    cancel: function () {
+      this.$dispatch('streak-settings-closed');
     },
     toggleDayExclusion: function (index) {
       var key = 'excludeDay' + index;

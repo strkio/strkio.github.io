@@ -1,4 +1,5 @@
 var gulp = require('gulp-help')(require('gulp'), {description: ''});
+var gutil = require('gulp-util');
 var $ = require('gulp-load-plugins')();
 var through = require('through2');
 var runSequence = require('run-sequence');
@@ -6,29 +7,27 @@ var del = require('del');
 var buildBranch = require('buildbranch');
 var webpackMiddleware = require('webpack-dev-middleware');
 var webpack = require('webpack');
+var portScanner = require('portscanner');
+var sauceConnectLauncher = require('sauce-connect-launcher');
+var seleniumStandalone = require('selenium-standalone');
+var once = require('lodash.once');
+var clone = require('lodash.clone');
+var without = require('lodash.without');
+var async = require('async');
+var StreamSlicer = require('stream-slicer');
+var connect = require('connect');
+var serveStatic = require('serve-static');
+var http = require('http');
 var path = require('path');
+var spawn = require('child_process').spawn;
+
+var bowerDependencies = Object.keys(require('./bower.json').dependencies);
 
 var webpackConfigTemplate = {
   entry: {
     index: './src/scripts/index.js',
-    thirdparty: [
-      /* consider es6-shim or transpiler instead */
-      'Array.prototype.find',
-      'Array.prototype.findIndex',
-      'String.prototype.endsWith',
-      'smoothscroll',
-      'raf.js',
-      'd3',
-      'moment',
-      'pikaday',
-      'query-string',
-      'superagent',
-      'vue',
-      'fastclick',
-      'http-status',
-      'grapnel',
-      'strkio-storage-githubgist'
-    ]
+    thirdparty: ['lodash.once'].concat(without(bowerDependencies,
+      'foundation', 'hint.css', 'normalize.css'))
   },
   resolve: {
     modulesDirectories: ['bower_components', 'node_modules'],
@@ -42,14 +41,18 @@ var webpackConfigTemplate = {
   },
   module: {
     noParse: [
-      /(d3|moment|pikaday|query-string|superagent|vue|fastclick|grapnel)/
+      new RegExp('(' + without(bowerDependencies,
+        'strkio-storage-githubgist'
+      ).join('|') + ')')
     ],
     loaders: [
       {
         test: /\.html/,
         loader: 'html',
         query: {
-          removeRedundantAttributes: false // because of foundation
+          removeRedundantAttributes: false, // because of foundation,
+          collapseWhitespace: true,
+          conservativeCollapse: true
         }
       }
     ]
@@ -65,12 +68,29 @@ var webpackConfigTemplate = {
 };
 
 var optimize = false;
+var thirdpartyCSSBuilt = false;
 
 var src = {
   js: ['gulpfile.js', 'src/scripts/**/*.js'],
   css: 'src/stylesheets/**/*.css',
   html: 'src/*.html'
 };
+
+function httpServer(o, cb) {
+  var c = connect();
+  o.middleware && (o.middleware.forEach(function (m) { c.use(m); }));
+  var roots = Array.isArray(o.root) ? o.root : [o.root];
+  roots.forEach(function (r) { c.use(serveStatic(r)); });
+  var server = http.createServer(c);
+  server.listen(o.port, cb);
+  ['exit', 'SIGTERM', 'SIGINT'].forEach(function (e) {
+    process.on(e, function () {
+      try { server.close(); } catch (e) {}
+      setImmediate(process.exit.bind(null, 0));
+    });
+  });
+  return server;
+}
 
 gulp.task('build', function (cb) {
   optimize = true;
@@ -93,7 +113,7 @@ gulp.task('build:favicon', function () {
 });
 
 gulp.task('build:fonts', function () {
-  return gulp.src('src/fonts/*.ttf', {base: 'src'})
+  return gulp.src('src/fonts/*.woff', {base: 'src'})
     .pipe(gulp.dest('build'));
 });
 
@@ -168,16 +188,20 @@ gulp.task('build:scripts', function (cb) {
     if (err) {
       return cb(err);
     }
-    console.log(stats.toString());
+    if (!optimize) {
+      console.log(stats.toString());
+    }
     cb();
   });
 });
 
 gulp.task('build:stylesheets', function () {
-  return gulp.src([
-    'src/stylesheets/index.css',
-    'src/stylesheets/thirdparty.css' // todo: replace with concat
-  ], {base: 'src'})
+  var src = ['src/stylesheets/index.css'];
+  if (!thirdpartyCSSBuilt) {
+    src.push('src/stylesheets/thirdparty.css');
+    thirdpartyCSSBuilt = true;
+  }
+  return gulp.src(src, {base: 'src'})
     .pipe($.myth())
     .on('error', console.log)
     .pipe(optimize ? $.csso() : through.obj())
@@ -217,22 +241,189 @@ gulp.task('serve', ['clean'], function (cb) {
   webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin(
     'thirdparty', 'scripts/thirdparty.js'));
   runSequence(['build:stylesheets', 'build:html'], function () {
-    $.connect.server({
+    httpServer({
       root: ['build', 'src', '.'],
       port: 8000,
-      middleware: function () {
-        return [
+      middleware: [
           webpackMiddleware(webpack(webpackConfig))
-        ];
-      }
-    });
+      ]
+    }, cb);
     gulp.watch(src.css, ['build:stylesheets']);
     gulp.watch(src.js, ['lint:scripts']);
     gulp.watch(src.html, ['build:html']);
-    cb();
   });
 });
 
-gulp.task('serve:build', function () {
-  $.connect.server({root: 'build', port: 8000});
+gulp.task('serve:build', function (cb) {
+  httpServer({root: 'build', port: 8000}, cb);
 });
+
+gulp.task('launch:sauce-connect', function (cb) {
+  var port = 4445;
+  portScanner.checkPortStatus(port, 'localhost', function (err, status) {
+    if (status === 'open') {
+      gutil.log('Sauce Connect must be already running (port ' + port +
+        ' is open).');
+      cb();
+    } else {
+      sauceConnectLauncher({
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY
+      }, function (err, sauceConnectProcess) {
+        if (process) {
+          ['exit', 'SIGTERM', 'SIGINT'].forEach(function (e) {
+            process.on(e, function () {
+              try { sauceConnectProcess.close(); } catch (e) {}
+              setImmediate(process.exit.bind(null, 0));
+            });
+          });
+        }
+        cb(err);
+      });
+    }
+  });
+});
+
+gulp.task('launch:selenium', function (cb) {
+  cb = once(cb);
+  var options = gutil.env;
+  var port = 4444;
+  var launchTimeoutInMs = 5000;
+  portScanner.checkPortStatus(port, 'localhost', function (err, status) {
+    if (status === 'open') {
+      gutil.log('Selenium must be already running (port ' + port +
+        ' is open).');
+      cb();
+    } else {
+      var selenium = seleniumStandalone({stdio: ['ignore', 'pipe', 'pipe']});
+      var launchTimeout;
+      ['stderr', 'stdout'].forEach(function (output) {
+        selenium[output].on('data', function (data) {
+          var l = data.toString();
+          if (options.verbose === 'true') {
+            gutil.log(l.trim());
+          }
+          if (~l.indexOf('Started org.openqa.jetty.jetty.Server')) {
+            clearTimeout(launchTimeout);
+            cb();
+          }
+        });
+      });
+      launchTimeout = setTimeout(function () {
+        cb(new Error('An attempt to start Selenium timed out (' +
+          launchTimeoutInMs + 'ms).'));
+      }, launchTimeoutInMs);
+    }
+  });
+});
+
+function buildAndServe(cb) {
+  var port = 8000;
+  portScanner.checkPortStatus(port, 'localhost', function (err, status) {
+    if (status === 'open') {
+      gutil.log('HTTP server must be already running (port ' + port +
+      ' is open).');
+      cb();
+    } else {
+      runSequence('build', 'serve:build', cb);
+    }
+  });
+}
+
+gulp.task('test:e2e', function (cb) {
+  var options = gutil.env;
+  var mochaOptions = options.mochaArg || [];
+  Array.isArray(mochaOptions) || (mochaOptions = [mochaOptions]);
+  var concurrency = options.concurrency || 2;
+  var browser = options.browser || 'phantomjs';
+  var desiredCapabilities = options.desiredCapabilities;
+  desiredCapabilities &&
+    (desiredCapabilities = JSON.parse(desiredCapabilities));
+  var target = options.target || 'localhost:8000';
+  target.match(/^https?:\/\/.*$/i) || (target = 'http://' + target);
+  var launchSauceConnect = options.launchSauceConnect !== false;
+  if (!desiredCapabilities) {
+    if (browser === 'saucelabs') {
+      desiredCapabilities = require('./test/sauce-browsers.json');
+    } else {
+      Array.isArray(browser) || (browser = [browser]);
+      desiredCapabilities = browser.map(function (browserName) {
+        return {browserName: browserName};
+      });
+    }
+  }
+  Array.isArray(desiredCapabilities) ||
+    (desiredCapabilities = [desiredCapabilities]);
+  var build = options.build;
+  if (browser === 'saucelabs') {
+    build = require('./package.json').version + '-' + Date.now();
+  }
+  buildAndServe(function (err) {
+    if (err) {
+      return cb(err);
+    }
+    runSequence(
+      (function () {
+        var r = [];
+        if (browser === 'saucelabs') {
+          launchSauceConnect && r.push('launch:sauce-connect');
+        } else {
+          r.push('launch:selenium');
+        }
+        return r;
+      }()),
+      function () {
+        gutil.log('Starting E2E suite (over ' + desiredCapabilities.length +
+        ' browser(s))');
+        async.mapLimit(desiredCapabilities, concurrency, function (c, cb) {
+          var env = clone(process.env);
+          if (browser !== 'saucelabs') {
+            delete env.SAUCE_USERNAME;
+            delete env.SAUCE_ACCESS_KEY;
+          }
+          env.BASE_URL = target;
+          env.WEBDRIVER_DESIRED_CAPABILITIES = JSON.stringify(c);
+          env.BUILD = build;
+          var id = c.browserName;
+          c.version && (id += '/' + c.version);
+          c.deviceName && (id += '/' + c.deviceName);
+          var reporter = function (slice) {
+            slice = slice.toString();
+            if (slice.trim().length) {
+              gutil.log(id + ': ' + slice.replace(/\r/g, ''));
+            }
+          };
+          var mocha = spawn('mocha', mochaOptions.concat('test/e2e.js'),
+            {env: env});
+          mocha.stdout.pipe(new StreamSlicer().on('slice', reporter));
+          mocha.stderr.pipe(new StreamSlicer().on('slice', reporter));
+          mocha.on('close', function (exitCode) {
+            cb(null, exitCode);
+          });
+        }, function (err, exitCodes) {
+          if (!err) {
+            var failed = exitCodes.some(function (exitCode) {
+              return exitCode !== 0;
+            });
+            if (failed) {
+              err = new Error('FAILED');
+              err.showStack = false;
+            } else {
+              gutil.log('SUCCEEDED');
+            }
+            process.kill(process.pid, 'SIGINT');
+          }
+          cb(err);
+        });
+      });
+  });
+});
+
+gulp.task('test:unit', function () {
+  var options = gutil.env;
+  var grep = options.g || options.grep;
+  return gulp.src('test/unit/**/*.spec.js', {read: false})
+    .pipe($.mocha({grep: grep}));
+});
+
+gulp.task('test', ['test:e2e']);

@@ -2,20 +2,12 @@ var Vue = require('vue');
 
 module.exports = Vue.extend({
   template: require('../../templates/components/streak-set.html'),
-  mixins: [
-    require('../mixins/drag-and-drop')
-  ],
   components: {
-    'streak-settings': require('./streak-settings'),
-    'streak-delete-confirmation': {
-      template: require(
-        '../../templates/components/streak-delete-confirmation.html')
-    },
-    'streak': require('./streak')
+    'streak-set-item': require('./streak-set-item')
   },
   events: {
-    'new-streak-requested': function () {
-      this.add();
+    'remove-streak': function (streak) {
+      this.streaks.$remove(streak);
       return false;
     }
   },
@@ -24,52 +16,22 @@ module.exports = Vue.extend({
       streaks: []
     };
   },
-  computed: {
-    readOnly: function () {
-      return !this.$root.$data.owner;
-    }
-  },
   methods: {
-    edit: function (streak, e) {
-      e.targetVM.$data.$add('activeView');
-      if (e.targetVM.$data.activeView === 'streak-settings') {
-        this.restoreDefaultView(e);
-      } else {
-        e.targetVM.$data.activeView = 'streak-settings';
-      }
+    moveUp: function (streak) {
+      this.moveStreak(streak, -1);
     },
-    askForDeleteConfirmation: function (streak, e) {
-      e.targetVM.$data.$add('activeView');
-      if (e.targetVM.$data.activeView === 'streak-delete-confirmation') {
-        this.restoreDefaultView(e);
-      } else {
-        e.targetVM.$data.activeView = 'streak-delete-confirmation';
-      }
+    moveDown: function (streak) {
+      this.moveStreak(streak, +1);
     },
-    restoreDefaultView: function (e) {
-      if (!e.targetVM.$data.streak.name) {
-        this.streaks.$remove(e.targetVM.$data.streak);
-      } else {
-        e.targetVM.$data.$add('activeView');
-        e.targetVM.$data.activeView = 'streak';
+    moveStreak: function (streak, offset) {
+      var sourceIndex = this.$data.streaks.indexOf(streak);
+      var insertIndex = sourceIndex + offset;
+      var streaks = this.$data.streaks;
+      if (insertIndex < 0 || insertIndex >= streaks.length) {
+        return;
       }
-    },
-    add: function () {
-      var pendingStreakIndex = this.streaks.findIndex(function (streak) {
-        return !streak.name;
-      });
-      if (!~pendingStreakIndex) {
-        this.streaks.push({
-          data: {}
-        });
-        pendingStreakIndex = this.streaks.length - 1;
-      }
-      Vue.nextTick(function () {
-        this._children[pendingStreakIndex].$el.scrollIntoView(false);
-      }, this);
-    },
-    remove: function (streak) {
-      this.streaks.$remove(streak);
+      var removed = streaks.splice(sourceIndex, 1);
+      streaks.splice(insertIndex, 0, removed[0]);
     }
   }
 });

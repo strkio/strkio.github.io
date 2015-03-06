@@ -1,95 +1,7 @@
 var d3 = require('d3');
 var moment = require('moment');
-
-function ColorDistribution(options) {
-  var mapping = options.mapping;
-  this._intervals = Object.keys(mapping)
-    .map(function (color) {
-      var interval = mapping[color];
-      if (typeof interval === 'number') {
-        interval = [interval, interval];
-      } else if (interval.length !== 2 ||
-        isNaN(interval[0]) || isNaN(interval[1])) {
-        throw new Error(interval + ' is not a valid interval');
-      }
-      return {id: color, interval: interval};
-    });
-  if (!this._intervals.length) {
-    throw new Error('At least one interval must be defined');
-  }
-  this._maxColorIndex = options.maxColorIndex || 4;
-}
-
-ColorDistribution.prototype._findInterval = function (v) {
-  var intervals = this._intervals;
-  for (var i = 0, end = intervals.length, ci; i < end; i++) {
-    ci = intervals[i];
-    if (ci.interval[0] <= v && v <= ci.interval[1]) {
-      return ci;
-    }
-  }
-  return null;
-};
-
-ColorDistribution.prototype.colorAt = function (v) {
-  var ci = this._findInterval(v);
-  if (!ci) {
-    return null;
-  }
-  var i = [ci.interval[0], ci.interval[1]];
-  var inverted;
-  if (i[0] > i[1]) {
-    var i0 = i[0]; i[0] = i[1];	i[1] = i0; // swap
-    inverted = true;
-  }
-  var maxColorIndex = this._maxColorIndex;
-  var intervalLength = Math.abs(i[1] - i[0]);
-  var cv = v - (v > 0 ? i[0] - 1 : i[1] + 1);
-  var colorIndex = intervalLength ?
-    Math.min(
-      maxColorIndex,
-      Math.ceil(((maxColorIndex + 1) / intervalLength) * Math.abs(cv))
-    ) : 1;
-  return {
-    id: ci.id,
-    intensity: colorIndex ?
-      (inverted ? maxColorIndex - colorIndex : colorIndex) : 0
-  };
-};
-
-function EventEmitter() {
-  this._ls = {};
-}
-
-EventEmitter.prototype.on = function (eventName, listener) {
-  (this._ls[eventName] || (this._ls[eventName] = [])).push(listener);
-  return this;
-};
-
-EventEmitter.prototype.off = function (eventName, listener) {
-  var ls = this._ls[eventName];
-  if (ls) {
-    if (listener) {
-      var index = ls.indexOf(listener);
-      if (~index) {
-        ls.splice(index, 1);
-      }
-    } else {
-      this._ls[eventName] = [];
-    }
-  }
-  return this;
-};
-
-EventEmitter.prototype.trigger = function (eventName, payload) {
-  var ls = this._ls[eventName];
-  if (ls) {
-    ls.forEach(function (listener) {
-      listener.call(null, payload);
-    });
-  }
-  return this;
-};
+var ColorDistribution = require('./color-distribution');
+var EventEmitter = require('./event-emitter');
 
 function extend(l, r) {
   Object.keys(r).forEach(function (key) {
@@ -110,6 +22,10 @@ function CalendarGraph(options) {
   if (this.options.monthSpacing == null) {
     this.options.monthSpacing = ~~(this.options.cellSize / 2);
   }
+  this._colorDistribution =
+    options.colorDistribution instanceof ColorDistribution ?
+    options.colorDistribution :
+    new ColorDistribution({mapping: this.options.colorDistribution});
   EventEmitter.call(this);
 }
 
@@ -308,9 +224,7 @@ CalendarGraph.prototype.updateValue = function (date, value) {
 
 CalendarGraph.prototype._applyColoring = function (data) {
   var disableDay = this.options.disableDay;
-  var colorDistribution = this._colorDistribution ||
-    (this._colorDistribution =
-      new ColorDistribution({mapping: this.options.coloring}));
+  var colorDistribution = this._colorDistribution;
   this._daySelector
     .filter(function (d) {
       return data.hasOwnProperty(d);
@@ -320,7 +234,7 @@ CalendarGraph.prototype._applyColoring = function (data) {
         return 'day disabled';
       }
       var c = colorDistribution.colorAt(+data[d]);
-      return 'day' + (c ? ' ' + c.id + ' cg-color-' + c.intensity : '');
+      return 'day' + (c ? ' ' + c.color + ' cg-color-' + c.intensity : '');
     });
 };
 
