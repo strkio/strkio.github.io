@@ -9,7 +9,8 @@ function StreakMetrics(o) {
   this.endDate = o.endDate || moment().startOf('day').format('YYYY-MM-DD');
   this.startDate = o.startDate;
   this.excludedDays = o.excludedDays || [];
-  this.range = o.range ? o.range.slice() : [Number.MIN_VALUE, Number.MAX_VALUE];
+  this.range = o.range && o.range.length ?
+    o.range.slice() : [Number.MIN_VALUE, Number.MAX_VALUE];
   this.range.sort(function (l, r) { return l - r; });
   this.inverted = !!o.inverted;
   this.data = o.data;
