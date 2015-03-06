@@ -162,7 +162,7 @@ module.exports = Vue.extend({
     },
     sync: function () {
       var $data = this.$data;
-      if ($data.syncInProgress) {
+      if ($data.syncInProgress || $data.saveInProgress) {
         return;
       }
       var gist = this.gist;
@@ -184,7 +184,7 @@ module.exports = Vue.extend({
     },
     addNewStreak: function () {
       var $data = this.$data;
-      if ($data.syncInProgress) {
+      if ($data.syncInProgress || $data.saveInProgress) {
         return;
       }
       this.$data.activateNewStreakVM = true;
@@ -194,7 +194,7 @@ module.exports = Vue.extend({
     },
     saveAsGist: function () {
       var $data = this.$data;
-      if ($data.syncInProgress) {
+      if ($data.syncInProgress || $data.saveInProgress) {
         return;
       }
       var gist = new GitHubGist(this.set, {
