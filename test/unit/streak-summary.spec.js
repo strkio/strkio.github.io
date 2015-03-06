@@ -94,6 +94,14 @@ describe('streak-summary', function () {
         .longestStreak()).to.be.equal(3);
     });
 
+    it('should be equal 0 if value is set and start/end date match',
+      function () {
+        expect(new StreakSummary({data: {
+          '2015-03-10': 1
+        }, inverted: true, startDate: '2015-03-10', endDate: '2015-03-10'})
+          .longestStreak()).to.be.equal(0);
+      });
+
   });
 
   describe('#currentStreak()', function () {

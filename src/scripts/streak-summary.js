@@ -37,7 +37,7 @@ StreakMetrics.prototype.longestStreak = function () {
   var keys = Object.keys(data).sort();
   var entries = [];
   if (inverted) {
-    entries.push(moment(startDate).subtract(1, 'day'));
+    entries.push(moment(startDate));
   }
   var dayBeforeStartDate = moment(startDate).subtract(1, 'day');
   var dayAfterEndDate = moment(endDate).add(1, 'day');
