@@ -166,6 +166,7 @@ module.exports = Vue.extend({
         return;
       }
       var gist = this.gist;
+      var scrollTop = document.body.scrollTop;
       $data.syncInProgress = true;
       $data.wrn = null;
       Vue.nextTick(function () {
@@ -178,6 +179,7 @@ module.exports = Vue.extend({
           }
           $data.set = data;
           $data.syncInProgress = false;
+          document.body.scrollTop = scrollTop;
           $data.updatePending = gist.updatePending();
         });
       }, this);
