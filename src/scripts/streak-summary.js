@@ -1,4 +1,5 @@
 var moment = require('moment');
+var clone = require('lodash.clone');
 
 /*
  * todo: complete rewrite. Current version is extremely inefficient and was
@@ -13,8 +14,17 @@ function StreakMetrics(o) {
     o.range.slice() : [Number.MIN_VALUE, Number.MAX_VALUE];
   this.range.sort(function (l, r) { return l - r; });
   this.inverted = !!o.inverted;
-  this.data = o.data;
+  this.data = clone(o.data);
 }
+
+StreakMetrics.prototype.add = function (key, value) {
+  this.data.$add(key, value);
+  this.data[key] = value;
+};
+
+StreakMetrics.prototype.remove = function (key) {
+  this.data.$delete(key);
+};
 
 StreakMetrics.prototype.totalEntries = function () {
   var data = this.data;

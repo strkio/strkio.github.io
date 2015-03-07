@@ -46,10 +46,11 @@ module.exports = Vue.extend({
         if (e.value) {
           data.$add(key, e.value);
           data[key] = e.value;
+          vm.$dispatch('set-updated', 'add', key, e.value);
         } else {
           data.$delete(key);
+          vm.$dispatch('set-updated', 'delete', key);
         }
-        vm.$dispatch('set-updated');
       }).attach(this.$el);
   }
 });

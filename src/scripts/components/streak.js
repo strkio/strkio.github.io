@@ -12,7 +12,22 @@ module.exports = Vue.extend({
     };
   },
   events: {
-    'set-updated': 'updateSummary'
+    'set-updated': function (action, key, value) {
+      switch (action) {
+        case 'refresh':
+          this.streakSummary = new StreakSummary(this.$data.streak);
+          break;
+        case 'add':
+          this.streakSummary.add(key, value);
+          break;
+        case 'delete':
+          this.streakSummary.remove(key);
+          break;
+        default:
+          console.warn('unrecognized update action: ' + action);
+      }
+      this.updateSummary();
+    }
   },
   ready: function () {
     this.streakSummary = new StreakSummary(this.$data.streak);
