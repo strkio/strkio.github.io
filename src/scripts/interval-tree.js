@@ -1,3 +1,32 @@
+function Node(key) {
+  this.left = null;
+  this.right = null;
+  this.key = key;
+  this.value = null;
+}
+
+function IllegalArgumentException(message) {
+  this.message = message;
+}
+
+function isInt(n) {
+  return n === +n && n === (n | 0);
+}
+
+function intersects(i1s, i1e, i2s, i2e) {
+  return !(i1e < i2s || i2e < i1s);
+}
+
+function findInRange(node, leftBond, rightBond) {
+  return ((!!node.value &&
+    intersects(leftBond, rightBond, node.value.s, node.value.e)) ? node :
+      null) ||
+    ((!!node.left && node.key > leftBond) ?
+      findInRange(node.left, leftBond, rightBond) : null) ||
+    ((!!node.right && node.key < rightBond) ?
+      findInRange(node.right, leftBond, rightBond) : null);
+}
+
 /**
  * This is simple implementation of the interval tree,
  * specially modified for non-intersecting intervals.
@@ -16,10 +45,12 @@
  */
 function IntervalTree(rangeStart, rangeEnd) {
   if (!isInt(rangeStart) || !isInt(rangeEnd)) {
-    throw new IllegalArgumentException('rangeStart or rangeEnd is not an integer');
+    throw new IllegalArgumentException(
+      'rangeStart or rangeEnd is not an integer');
   }
   if (rangeStart > rangeEnd) {
-    throw new IllegalArgumentException('rangeStart should be less than rangeEnd');
+    throw new IllegalArgumentException(
+      'rangeStart should be less than rangeEnd');
   }
 
   this.rangeStart = rangeStart;
@@ -48,8 +79,8 @@ IntervalTree.prototype.visit = function (callback) {
 
 /**
  * Adds element to the three.
- * Key is the interval that consists of low and high boundaries (inclusive), both integers.
- * Value can be anything.
+ * Key is the interval that consists of low and high boundaries (inclusive),
+ * both integers. Value can be anything.
  *
  * @param keyStart integer low boundary of the key
  * @param keyEnd  integer high boundary of the key
@@ -61,11 +92,13 @@ IntervalTree.prototype.visit = function (callback) {
  */
 IntervalTree.prototype.add = function (keyStart, keyEnd, value) {
   if (!isInt(keyStart) || !isInt(keyEnd) || keyStart > keyEnd) {
-    throw new IllegalArgumentException('keyStart and keyEnd should be numbers and keyStart <= keyAnd');
+    throw new IllegalArgumentException(
+      'keyStart and keyEnd should be numbers and keyStart <= keyAnd');
   }
 
   if (keyStart < this.rangeStart || this.rangeEnd < keyEnd) {
-    var extendedTree = new IntervalTree(Math.min(this.rangeStart, keyStart), Math.max(this.rangeEnd, keyEnd));
+    var extendedTree = new IntervalTree(Math.min(this.rangeStart, keyStart),
+      Math.max(this.rangeEnd, keyEnd));
     this.visit(function (s, e, v) {
       extendedTree.add(s, e, v);
     });
@@ -78,7 +111,8 @@ IntervalTree.prototype.add = function (keyStart, keyEnd, value) {
 
   var nodeInRange = findInRange(this.root, keyStart, keyEnd);
   if (!!nodeInRange) {
-    throw new IllegalArgumentException('Already contains interval that intersects with given range ' +
+    throw new IllegalArgumentException(
+      'Already contains interval that intersects with given range ' +
     '(' + keyStart + ',' + keyEnd + ') ' + JSON.stringify(nodeInRange.value));
   }
 
@@ -94,7 +128,8 @@ IntervalTree.prototype.add = function (keyStart, keyEnd, value) {
       node.left = node.left || new Node(Math.floor((node.key + leftBond) / 2));
       recAdd(node.left, leftBond, node.key - 1);
     } else {
-      node.right = node.right || new Node(Math.floor((node.key + rightBond + 1) / 2));
+      node.right =
+        node.right || new Node(Math.floor((node.key + rightBond + 1) / 2));
       recAdd(node.right, node.key + 1, rightBond);
     }
   }
@@ -153,30 +188,5 @@ IntervalTree.prototype.remove = function (key) {
 
   recRm(this.root);
 };
-
-function Node(key) {
-  this.left = null;
-  this.right = null;
-  this.key = key;
-  this.value = null;
-}
-
-function IllegalArgumentException(message) {
-  this.message = message;
-}
-
-function isInt(n) {
-  return n === +n && n === (n | 0);
-}
-
-function intersects(i1s, i1e, i2s, i2e) {
-  return !(i1e < i2s || i2e < i1s);
-}
-
-function findInRange(node, leftBond, rightBond) {
-  return ((!!node.value && intersects(leftBond, rightBond, node.value.s, node.value.e)) ? node : null) ||
-    ((!!node.left && node.key > leftBond) ? findInRange(node.left, leftBond, rightBond) : null) ||
-    ((!!node.right && node.key < rightBond) ? findInRange(node.right, leftBond, rightBond) : null);
-}
 
 module.exports = IntervalTree;
