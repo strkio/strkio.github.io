@@ -176,8 +176,9 @@ module.exports = Vue.extend({
               message: 'Synchronization failed (GitHub returned ' +
                 err.status + ')'
             };
+          } else {
+            $data.set = data;
           }
-          $data.set = data;
           $data.syncInProgress = false;
           document.body.scrollTop = scrollTop;
           $data.updatePending = gist.updatePending();
