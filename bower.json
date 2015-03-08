@@ -21,7 +21,7 @@
     "Array.prototype.findIndex": "1.0.0",
     "Array.prototype.find": "1.0.0",
     "String.prototype.endsWith": "mathiasbynens/String.prototype.endsWith#a0eea7f368c6f3f00a1f7a53f01f8c05db325e12",
-    "strkio-storage-githubgist": "strkio/strkio-storage-githubgist#95a554d969e3c9c5e3fe4d8f58138081cd8deaf5",
+    "strkio-storage-githubgist": "strkio/strkio-storage-githubgist#93abdff42d5e0ff09c00f2125d67889d771f3583",
     "grapnel": "0.5.2"
   }
 }
