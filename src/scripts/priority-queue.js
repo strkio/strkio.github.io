@@ -94,6 +94,14 @@ var removeByIndex = function (idx) {
 };
 
 /**
+ * Returns current size of the queue.
+ * @returns {Number} size
+ */
+PriorityQueue.prototype.size = function () {
+  return this.elements.length;
+};
+
+/**
  * Removes element that corresponds to the provided key.
  * Part of the Map interface.
  * @param key
