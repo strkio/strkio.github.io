@@ -13,7 +13,7 @@ module.exports = Vue.extend({
   events: {
     'streak-settings-closed': function (streak) {
       if (streak) {
-        this.$dispatch('set-updated');
+        this.$dispatch('set-updated', 'refresh');
       }
       this.restoreDefaultView();
       return false;
