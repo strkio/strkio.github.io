@@ -5,31 +5,42 @@ var IntervalTree = require('../../src/scripts/interval-tree');
 describe('interval-tree', function () {
 
   describe('parameters validation', function () {
-    expect(function () {
-      new IntervalTree(0, -1);
-    }).to.throw();
 
-    expect(function () {
-      new IntervalTree(0, '');
-    }).to.throw();
+    it('should validate constructor params', function () {
+      expect(function () {
+        new IntervalTree(0, -1);
+      }).to.throw();
 
-    expect(function () {
-      new IntervalTree({}, 0);
-    }).to.throw();
+      expect(function () {
+        new IntervalTree(0, '');
+      }).to.throw();
 
-    expect(function () {
-      new IntervalTree(-1, -1).add({}, -1, -1);
-    }).to.throw();
+      expect(function () {
+        new IntervalTree({}, 0);
+      }).to.throw();
+    });
 
-    expect(function () {
-      new IntervalTree(-1, -1).add(-1, '', -1);
-    }).to.throw();
-    expect(function () {
-      new IntervalTree(-1, -1).find('');
-    }).to.throw();
-    expect(function () {
-      new IntervalTree(-1, -1).remove('');
-    }).to.throw();
+    it('should validate "add" arguments', function () {
+      expect(function () {
+        new IntervalTree(-1, -1).add({}, -1, -1);
+      }).to.throw();
+
+      expect(function () {
+        new IntervalTree(-1, -1).add(-1, '', -1);
+      }).to.throw();
+    });
+
+    it('should validate "find" arguments', function () {
+      expect(function () {
+        new IntervalTree(-1, -1).find('');
+      }).to.throw();
+    });
+
+    it('should validate "remove" arguments', function () {
+      expect(function () {
+        new IntervalTree(-1, -1).remove('');
+      }).to.throw();
+    });
   });
 
 
@@ -146,34 +157,37 @@ describe('interval-tree', function () {
     });
 
 
-    it('should detect intersection of wide range with narrow range ', function () {
-      var tree = new IntervalTree(0, 33);
-      tree.add(2, 14, '');
+    it('should detect intersection of wide range with narrow range ',
+      function () {
+        var tree = new IntervalTree(0, 33);
+        tree.add(2, 14, '');
 
-      for (var i = 2; i <= 14; i++) {
-        expect(function () {
-          tree.add(i, i, '');
-        }).to.throw(null, /.*Already contains.*/, 'Failed on interval (' + i + ',' + i + ')');
-      }
-    });
+        for (var i = 2; i <= 14; i++) {
+          expect(function () {
+            tree.add(i, i, '');
+          }).to.throw(null, /.*Already contains.*/,
+            'Failed on interval (' + i + ',' + i + ')');
+        }
+      });
 
-    it('should detect intersection of narrow range with wide range', function () {
-      var tree = new IntervalTree(0, 33);
-      tree.add(5, 5, '');
-      function check(s, e) {
-        expect(function () {
-          tree.add(s, e, 'err');
-        }).to.throw(/.*Already contains.*/);
-      }
+    it('should detect intersection of narrow range with wide range',
+      function () {
+        var tree = new IntervalTree(0, 33);
+        tree.add(5, 5, '');
+        function check(s, e) {
+          expect(function () {
+            tree.add(s, e, 'err');
+          }).to.throw(/.*Already contains.*/);
+        }
 
-      check(0, 5);
-      check(0, 10);
-      check(0, 33);
-      check(2, 33);
-      check(2, 6);
-      check(5, 33);
-      check(5, 5);
-    });
+        check(0, 5);
+        check(0, 10);
+        check(0, 33);
+        check(2, 33);
+        check(2, 6);
+        check(5, 33);
+        check(5, 5);
+      });
   });
 
 
@@ -200,7 +214,11 @@ describe('interval-tree', function () {
         if (i < 5 || i > 23) {
           expect(tree.find(i)).to.be.equal(null);
         } else {
-          expect(tree.find(i)).to.be.eql({'start': 5, 'end': 23, 'value': '5-23'});
+          expect(tree.find(i)).to.be.eql({
+            'start': 5,
+            'end': 23,
+            'value': '5-23'
+          });
         }
       }
     });
@@ -221,39 +239,41 @@ describe('interval-tree', function () {
     });
 
 
-    it('should not find anything after removal in a mid-size tree', function () {
-      var tree = new IntervalTree(0, 10);
-      tree.add(7, 7, '7');
-      expect(tree.find(7)).to.not.be.equal(null);
+    it('should not find anything after removal in a mid-size tree',
+      function () {
+        var tree = new IntervalTree(0, 10);
+        tree.add(7, 7, '7');
+        expect(tree.find(7)).to.not.be.equal(null);
 
-      tree.remove(7);
-      expect(tree.find(7)).to.be.equal(null);
+        tree.remove(7);
+        expect(tree.find(7)).to.be.equal(null);
 
-      expect(tree.root.left).to.be.equal(null);
-      expect(tree.root.right).to.be.equal(null);
-    });
+        expect(tree.root.left).to.be.equal(null);
+        expect(tree.root.right).to.be.equal(null);
+      });
 
-    it('should correctly preserve the hierarchy when deleting value from the node with children', function () {
-      var tree = new IntervalTree(0, 10);
-      tree.add(7, 7, '7');
-      tree.add(5, 5, '5');
-      tree.add(8, 8, '8');
-      tree.add(3, 3, '3');
-      expect(tree.find(7)).to.not.be.equal(null);
-      expect(tree.find(5)).to.not.be.equal(null);
-      expect(tree.find(8)).to.not.be.equal(null);
-      expect(tree.find(3)).to.not.be.equal(null);
+    it('should correctly preserve the hierarchy when deleting value from the node with children',
+      function () {
+        var tree = new IntervalTree(0, 10);
+        tree.add(7, 7, '7');
+        tree.add(5, 5, '5');
+        tree.add(8, 8, '8');
+        tree.add(3, 3, '3');
+        expect(tree.find(7)).to.not.be.equal(null);
+        expect(tree.find(5)).to.not.be.equal(null);
+        expect(tree.find(8)).to.not.be.equal(null);
+        expect(tree.find(3)).to.not.be.equal(null);
 
-      tree.remove(5);
-      tree.remove(8);
-      tree.remove(3);
-      expect(tree.find(7)).to.not.be.equal(null);
-      expect(tree.find(5)).to.be.equal(null);
-      expect(tree.find(8)).to.be.equal(null);
-      expect(tree.find(3)).to.be.equal(null);
+        tree.remove(5);
+        tree.remove(8);
+        tree.remove(3);
+        expect(tree.find(7)).to.not.be.equal(null);
+        expect(tree.find(5)).to.be.equal(null);
+        expect(tree.find(8)).to.be.equal(null);
+        expect(tree.find(3)).to.be.equal(null);
 
-      expect(tree.root.right.left).to.not.be.equal(null);
-    });
+        expect(tree.root.right.left).to.not.be.equal(null);
+      });
   });
 
 
@@ -265,13 +285,12 @@ describe('interval-tree', function () {
 
       tree.add(5, 10, '5-10');
 
-      expect(tree.find(1)).to.be.eql({start: 1, end:2, value: '1-2'});
-      expect(tree.find(4)).to.be.eql({start: 3, end:4, value: '3-4'});
-      expect(tree.find(5)).to.be.eql({start: 5, end:10, value: '5-10'});
-      expect(tree.find(7)).to.be.eql({start: 5, end:10, value: '5-10'});
+      expect(tree.find(1)).to.be.eql({start: 1, end: 2, value: '1-2'});
+      expect(tree.find(4)).to.be.eql({start: 3, end: 4, value: '3-4'});
+      expect(tree.find(5)).to.be.eql({start: 5, end: 10, value: '5-10'});
+      expect(tree.find(7)).to.be.eql({start: 5, end: 10, value: '5-10'});
     });
   });
-
 
 
   describe('testing against non-tree implementation', function () {
